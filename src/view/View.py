@@ -9,7 +9,9 @@ from src.view.components.NumberBoard import NumberBoard
 from src.view.components.NumberButton import NumberButton
 from src.view.components.PuzzleButton import PuzzleButton
 
-
+'''
+Night mode Sudoku view
+'''
 class View:
 
     def __init__(self):

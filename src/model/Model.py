@@ -1,3 +1,12 @@
+'''
+Sudoku puzzle model
+'''
+
 class Model:
     def __init__(self):
-        self.game = []
+        self.puzzle = Puzzle()
+
+
+
+    def get_instance(self):
+        pass
