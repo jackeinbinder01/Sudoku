@@ -17,6 +17,7 @@ class View:
     def __init__(self):
         self.game_window = pygame.display.set_mode(s.SCREEN_SIZE)
         pygame.display.set_caption(s.WINDOW_TITLE)
+        pygame.font.init()
 
         # add components
         self.game_board = GameBoard(self.game_window)

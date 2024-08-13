@@ -12,3 +12,6 @@ class Clock:
 
     def draw_clock(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
+
+    def get_middle_x_y(self):
+        return self.x + (self.width / 2), self.y + (self.height / 2)

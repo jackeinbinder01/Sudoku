@@ -15,7 +15,23 @@ class NumberButton:
         row = self.num // 5
         col = self.num % 5
 
-        x = self.x + (self.width + s.INX_PADDING) * col
-        y = self.y + (self.height + s.INY_BTM_PADDING) * row
+        self.x = s.NUMBER_BUTTON_X + (self.width + s.INX_PADDING) * col
+        self.y = s.NUMBER_BUTTON_Y + (self.height + s.INY_BTM_PADDING) * row
 
-        pygame.draw.rect(self.game_window, s.WHITE, (x, y, self.width, self.height), 3, 10)
+        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 3, 10)
+        self.draw_number()
+
+    def draw_number(self):
+        font = pygame.font.Font(None, 32)
+
+        if self.num + 1 == 10:
+            text_surface = font.render("X", True, s.WHITE)
+        else:
+            text_surface = font.render(str(self.num + 1), True, s.WHITE)
+
+        text_rect = text_surface.get_rect(center=self.get_middle_x_y())
+
+        self.game_window.blit(text_surface, text_rect)
+
+    def get_middle_x_y(self):
+        return self.x + (self.width / 2), self.y + (self.height / 2)

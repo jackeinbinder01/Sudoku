@@ -4,7 +4,8 @@ Sudoku puzzle model
 
 class Model:
     def __init__(self):
-        self.puzzle = Puzzle()
+        pass
+        # self.puzzle = Puzzle()
 
 
 

@@ -3,8 +3,8 @@ from src.resources import settings as s
 
 
 class NewPuzzleButton:
-    def __init__(self, screen, text, num):
-        self.screen = screen
+    def __init__(self, game_window, text, num):
+        self.game_window = game_window
         self.text = text
         self.num = num - 1
         self.width, self.height = s.NEW_PUZZLE_BUTTON_SIZE
@@ -13,4 +13,16 @@ class NewPuzzleButton:
         self.draw_button()
 
     def draw_button(self):
-        pygame.draw.rect(self.screen, s.WHITE, (self.x, self.y, self.width, self.height), 1)
+        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
+        self.draw_text()
+
+    def draw_text(self):
+        font = pygame.font.Font(None, 18)
+        text_surface = font.render(self.text, True, s.WHITE)
+
+        text_rect = text_surface.get_rect(center=self.get_middle_x_y())
+
+        self.game_window.blit(text_surface, text_rect)
+
+    def get_middle_x_y(self):
+        return self.x + (self.width / 2), self.y + (self.height / 2)

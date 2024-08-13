@@ -14,3 +14,15 @@ class ModeButton:
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
+        self.draw_text()
+
+    def draw_text(self):
+        font = pygame.font.Font(None, 18)
+        text_surface = font.render(self.text, True, s.WHITE)
+
+        text_rect = text_surface.get_rect(center=self.get_middle_x_y())
+
+        self.game_window.blit(text_surface, text_rect)
+
+    def get_middle_x_y(self):
+        return self.x + (self.width / 2), self.y + (self.height / 2)
