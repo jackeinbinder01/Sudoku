@@ -1,12 +1,13 @@
 import pygame
-from resources import settings as s
-from view.view_components.Clock import Clock
-from view.view_components.DifficultyButton import DifficultyButton
-from view.view_components.GameBoard import GameBoard
-from view.view_components.ModeButton import ModeButton
-from view.view_components.NewPuzzleButton import NewPuzzleButton
-from view.view_components.NumberBoard import NumberBoard
-
+from src.resources import settings as s
+from src.view.components.Clock import Clock
+from src.view.components.DifficultyButton import DifficultyButton
+from src.view.components.GameBoard import GameBoard
+from src.view.components.ModeButton import ModeButton
+from src.view.components.NewPuzzleButton import NewPuzzleButton
+from src.view.components.NumberBoard import NumberBoard
+from src.view.components.NumberButton import NumberButton
+from src.view.components.PuzzleButton import PuzzleButton
 
 
 class View:
@@ -27,9 +28,11 @@ class View:
         self.normal_button = ModeButton(self.game_window, "Normal", 1)
         self.candidate_button = ModeButton(self.game_window, "Candidate", 2)
         self.number_board = NumberBoard(self.game_window)
+        self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
+
         self.reset_puzzle_button = PuzzleButton(self.game_window, "Reset Puzzle", 1)
-        self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 1)
-        self.give_up_button = PuzzleButton(self.game_window, "Give Up", 1)
+        self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
+        self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
 
         # gameloop cond
         self.running = True
@@ -47,10 +50,12 @@ class View:
     def update_display(self):
         pygame.display.flip()
 
+'''
+Test Main
+'''
 def main():
     view = View()
     view.display()
-
 
 if __name__ == '__main__':
     main()

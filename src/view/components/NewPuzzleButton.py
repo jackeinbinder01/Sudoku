@@ -1,5 +1,5 @@
 import pygame
-from resources import settings as s
+from src.resources import settings as s
 
 
 class NewPuzzleButton:
@@ -8,11 +8,9 @@ class NewPuzzleButton:
         self.text = text
         self.num = num - 1
         self.width, self.height = s.NEW_PUZZLE_BUTTON_SIZE
-
-        self.x = s.X_PADDING * 2 + s.GRID_SIZE
-        self.y = s.Y_PADDING
-
+        self.x = s.NEW_PUZZLE_BUTTON_X + (self.width * self.num)
+        self.y = s.NEW_PUZZLE_BUTTON_Y
         self.draw_button()
 
     def draw_button(self):
-        pygame.draw.rect(self.screen, s.WHITE, (self.x + (self.width * self.num), self.y, self.width, self.height), 1)
+        pygame.draw.rect(self.screen, s.WHITE, (self.x, self.y, self.width, self.height), 1)
