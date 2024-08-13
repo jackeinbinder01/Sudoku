@@ -8,7 +8,7 @@ class NumberBoard:
         self.x = s.NUMBER_BOARD_X
         self.y = s.NUMBER_BOARD_Y
         self.width, self.height = s.NUMBER_BOARD_SIZE
-        self.draw_numberboard()
+        self.draw_number_board()
 
-    def draw_numberboard(self):
+    def draw_number_board(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
