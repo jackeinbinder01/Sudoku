@@ -1,5 +1,6 @@
 import pygame
 from src.resources import settings as s
+from src.view.components.GameCell import GameCell
 
 
 class GameBoard:
@@ -11,17 +12,33 @@ class GameBoard:
         self.y = s.GAME_BOARD_Y
         self.draw_grid()
 
+        self.game_cells = [GameCell(self.game_window, i) for i in range(9 * 9)]
+
+        self.cell_selected = False
+
     def draw_grid(self):
 
         for i in range(10):
             x = self.x + i * self.cell_size
             y = self.y + i * self.cell_size
 
-            # thick lines for 3x3 boxes
+            # Thick lines for 3x3 boxes
             if i % 3 == 0:
-                pygame.draw.line(self.game_window, s.WHITE, (x, self.y), (x, 514), 4)
-                pygame.draw.line(self.game_window, s.WHITE, (self.x, y), (505, y), 4)
-            # thin lines otherwise
+                pygame.draw.line(self.game_window, s.WHITE, (x, self.y), (x, self.y + self.grid_size), 4)
+                pygame.draw.line(self.game_window, s.WHITE, (self.x, y), (self.x + self.grid_size, y), 4)
+            # Thin lines otherwise
             else:
-                pygame.draw.line(self.game_window, s.WHITE, (x, self.y + 3), (x, 514), 1)
-                pygame.draw.line(self.game_window, s.WHITE, (self.x + 3, y), (505, y), 1)
+                pygame.draw.line(self.game_window, s.WHITE, (x, self.y), (x, self.y + self.grid_size), 1)
+                pygame.draw.line(self.game_window, s.WHITE, (self.x, y), (self.x + self.grid_size, y), 1)
+
+    def get_game_cells(self):
+        return self.game_cells
+
+    def set_cell_selected(self):
+        for cell in self.game_cells:
+            if cell.is_highlighted():
+                cell.is_selected = True
+
+    def is_cell_selected(self):
+        return self.cell_selected
+

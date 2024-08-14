@@ -1,4 +1,4 @@
-import pygame.draw
+import pygame
 from src.resources import settings as s
 
 
@@ -26,3 +26,10 @@ class ModeButton:
 
     def get_middle_x_y(self):
         return self.x + (self.width / 2), self.y + (self.height / 2)
+
+    def is_clicked(self, position):
+        x, y = position
+        return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
+
+    def on_click(self):
+        return f"\'{self.text}\' button clicked"

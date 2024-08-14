@@ -1,4 +1,6 @@
 import pygame
+from debugpy.adapter import components
+
 from src.resources import settings as s
 from src.view.components.Clock import Clock
 from src.view.components.DifficultyButton import DifficultyButton
@@ -12,6 +14,8 @@ from src.view.components.PuzzleButton import PuzzleButton
 '''
 Night mode Sudoku view
 '''
+
+
 class View:
 
     def __init__(self):
@@ -37,6 +41,20 @@ class View:
         self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
         self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
 
+        self.components = {
+            self.easy_button,
+            self.medium_button,
+            self.hard_button,
+            self.new_puzzle_button,
+            self.clock,
+            self.normal_button,
+            self.candidate_button,
+            self.reset_puzzle_button,
+            self.reveal_cell_button,
+            self.give_up_button,
+            *self.number_buttons
+        }
+
         # gameloop cond
         self.running = True
 
@@ -50,15 +68,28 @@ class View:
             if event.type == pygame.QUIT:
                 self.running = False
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                for component in self.components:
+                    if component.is_clicked(pos):
+                        print(f"[View] - {component.on_click()}")
+                for cell in self.game_board.get_game_cells():
+                    if cell.is_clicked(pos):
+                        print(f"[View] - {cell.on_click()}")
+
     def update_display(self):
         pygame.display.flip()
+
 
 '''
 Test Main
 '''
+
+
 def main():
     view = View()
     view.display()
+
 
 if __name__ == '__main__':
     main()

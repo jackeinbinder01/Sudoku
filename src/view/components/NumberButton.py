@@ -35,3 +35,13 @@ class NumberButton:
 
     def get_middle_x_y(self):
         return self.x + (self.width / 2), self.y + (self.height / 2)
+
+    def is_clicked(self, position):
+        x, y = position
+        return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
+
+    def on_click(self):
+        if self.num + 1 == 10:
+            return f"'X' button clicked"
+        else:
+            return f"\'{self.num + 1}\' button clicked"
