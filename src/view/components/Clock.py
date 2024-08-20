@@ -9,6 +9,7 @@ class Clock:
         self.x = s.CLOCK_X
         self.y = s.CLOCK_Y
         self.draw_clock()
+        self.is_paused = False
 
     def draw_clock(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -21,4 +22,12 @@ class Clock:
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
     def on_click(self):
-        return "'Clock' clicked"
+        return self.pause() if not self.is_paused else self.resume()
+
+    def pause(self):
+        self.is_paused = True
+        return "'Clock' paused"
+
+    def resume(self):
+        self.is_paused = False
+        return "'Clock' resumed"

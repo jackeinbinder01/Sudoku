@@ -10,6 +10,7 @@ class NumberButton:
         self.x = s.NUMBER_BUTTON_X
         self.y = s.NUMBER_BUTTON_Y
         self.draw_button()
+        self.clicked = False
 
     def draw_button(self):
         row = self.num // 5
@@ -19,15 +20,15 @@ class NumberButton:
         self.y = s.NUMBER_BUTTON_Y + (self.height + s.INY_BTM_PADDING) * row
 
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 3, 10)
-        self.draw_number()
+        self.draw_number(s.WHITE)
 
-    def draw_number(self):
+    def draw_number(self, color):
         font = pygame.font.Font(None, 32)
 
         if self.num + 1 == 10:
-            text_surface = font.render("X", True, s.WHITE)
+            text_surface = font.render("X", True, color)
         else:
-            text_surface = font.render(str(self.num + 1), True, s.WHITE)
+            text_surface = font.render(str(self.num + 1), True, color)
 
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
@@ -40,8 +41,24 @@ class NumberButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
+    def highlight_button(self):
+        pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height),0, 10)
+        self.draw_number(s.BLACK)
+
+    def unhighlight_button(self):
+        pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height), 0, 10)
+        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 3, 10)
+        self.draw_number(s.WHITE)
+
     def on_click(self):
-        if self.num + 1 == 10:
-            return f"'X' button clicked"
-        else:
-            return f"\'{self.num + 1}\' button clicked"
+        return self.click() if not self.clicked else self.unclick()
+
+    def click(self):
+        self.clicked = True
+        self.highlight_button()
+        return f"\'{"X" if self.num + 1 == 10 else self.num + 1}\' button clicked on"
+
+    def unclick(self):
+        self.clicked = False
+        self.unhighlight_button()
+        return f"\'{"X" if self.num + 1 == 10 else self.num + 1}\' button clicked off"

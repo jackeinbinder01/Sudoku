@@ -1,18 +1,16 @@
-import pygame.draw
+import pygame
 from src.resources import settings as s
 
 
-class PuzzleButton:
-    def __init__(self, game_window, text, num):
+class NormalButton:
+    def __init__(self, game_window):
         self.game_window = game_window
-        self.text = text
-        self.num = num - 1
-        self.width, self.height = s.PUZZLE_BUTTON_SIZE
-        self.x = s.PUZZLE_BUTTON_X + (self.width + s.IB_PADDING) * self.num
-        self.y = s.PUZZLE_BUTTON_Y
-
+        self.text = "Normal"
+        self.width, self.height = s.MODE_BUTTON_SIZE
+        self.x = s.MODE_BUTTON_X
+        self.y = s.MODE_BUTTON_Y
         self.draw_button()
-        self.clicked = False
+        self.is_on = False
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -43,14 +41,14 @@ class PuzzleButton:
         self.draw_text(s.WHITE)
 
     def on_click(self):
-        return self.click() if not self.clicked else self.unclick()
+        return self.click() if not self.is_on else self.unclick()
 
     def click(self):
-        self.clicked = True
+        self.is_on = True
         self.highlight_button()
         return f"\'{self.text}\' button clicked on"
 
     def unclick(self):
-        self.clicked = False
+        self.is_on = False
         self.unhighlight_button()
         return f"\'{self.text}\' button clicked off"

@@ -1,11 +1,11 @@
 import pygame
-from debugpy.adapter import components
 
 from src.resources import settings as s
 from src.view.components.Clock import Clock
 from src.view.components.DifficultyButton import DifficultyButton
 from src.view.components.GameBoard import GameBoard
-from src.view.components.ModeButton import ModeButton
+from src.view.components.NormalButton import NormalButton
+from src.view.components.CandidateButton import CandidateButton
 from src.view.components.NewPuzzleButton import NewPuzzleButton
 from src.view.components.NumberBoard import NumberBoard
 from src.view.components.NumberButton import NumberButton
@@ -32,8 +32,8 @@ class View:
         self.new_puzzle_button = NewPuzzleButton(self.game_window, "New Puzzle", 4)
 
         self.clock = Clock(self.game_window)
-        self.normal_button = ModeButton(self.game_window, "Normal", 1)
-        self.candidate_button = ModeButton(self.game_window, "Candidate", 2)
+        self.normal_button = NormalButton(self.game_window)
+        self.candidate_button = CandidateButton(self.game_window)
         self.number_board = NumberBoard(self.game_window)
         self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
 
@@ -41,18 +41,26 @@ class View:
         self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
         self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
 
-        self.components = {
+        self.difficulty_buttons = [
             self.easy_button,
             self.medium_button,
             self.hard_button,
-            self.new_puzzle_button,
-            self.clock,
+        ]
+
+        self.mode_buttons = [
             self.normal_button,
             self.candidate_button,
+        ]
+
+        self.puzzle_buttons = [
             self.reset_puzzle_button,
             self.reveal_cell_button,
-            self.give_up_button,
-            *self.number_buttons
+            self.give_up_button
+        ]
+
+        self.components = {
+            self.clock,
+            self.new_puzzle_button
         }
 
         # gameloop cond
@@ -70,6 +78,22 @@ class View:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+                for button in self.difficulty_buttons:
+                    if button.is_clicked(pos):
+                        [each.unclick() for each in self.difficulty_buttons if each.is_on]
+                        print(f"[View] - {button.on_click()}")
+                for button in self.mode_buttons:
+                    if button.is_clicked(pos):
+                        print(f"[View] - {button.on_click()}")
+                for button in self.number_buttons:
+                    if button.is_clicked(pos):
+                        print(f"[View] - {button.on_click()}")
+                for button in self.puzzle_buttons:
+                    if button.is_clicked(pos):
+                        print(f"[View] - {button.on_click()}")
+
+
+
                 for component in self.components:
                     if component.is_clicked(pos):
                         print(f"[View] - {component.on_click()}")
