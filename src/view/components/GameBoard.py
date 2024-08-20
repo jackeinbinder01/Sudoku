@@ -14,8 +14,6 @@ class GameBoard:
 
         self.game_cells = [GameCell(self.game_window, i) for i in range(9 * 9)]
 
-        self.cell_selected = False
-
     def draw_grid(self):
 
         for i in range(10):
@@ -34,11 +32,8 @@ class GameBoard:
     def get_game_cells(self):
         return self.game_cells
 
-    def set_cell_selected(self):
+    def get_selected_cell(self):
         for cell in self.game_cells:
-            if cell.is_highlighted():
-                cell.is_selected = True
-
-    def is_cell_selected(self):
-        return self.cell_selected
-
+            if cell.is_on:
+                return cell.get_row_col()
+        return None

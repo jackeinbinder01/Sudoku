@@ -112,6 +112,7 @@ class View:
                     if cell.is_clicked(pos):
                         [each.unclick() for each in self.game_board.get_game_cells() if each.is_on and each != cell]
                         print(f"[View] - {cell.on_click()}")
+                        print(f"[View] - Selected Cell = {self.game_board.get_selected_cell()}")
 
     def update_display(self):
         self.clock.draw_clock()
