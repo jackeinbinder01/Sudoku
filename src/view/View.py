@@ -110,9 +110,11 @@ class View:
                         print(f"[View] - {component.on_click()}")
                 for cell in self.game_board.get_game_cells():
                     if cell.is_clicked(pos):
+                        [each.unclick() for each in self.game_board.get_game_cells() if each.is_on and each != cell]
                         print(f"[View] - {cell.on_click()}")
 
     def update_display(self):
+        self.clock.draw_clock()
         pygame.display.flip()
 
 

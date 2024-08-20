@@ -1,3 +1,5 @@
+import time
+
 import pygame.draw
 from src.resources import settings as s
 
@@ -44,21 +46,25 @@ class NumberButton:
     def highlight_button(self):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height),0, 10)
         self.draw_number(s.BLACK)
+        pygame.display.update()
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height), 0, 10)
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 3, 10)
         self.draw_number(s.WHITE)
+        pygame.display.update()
 
     def on_click(self):
-        return self.click() if not self.clicked else self.unclick()
+        if not self.clicked:
+            self.click()
+            time.sleep(0.15)
+            self.unclick()
+        return f"\'{"X" if self.num + 1 == 10 else self.num + 1}\' button clicked"
 
     def click(self):
         self.clicked = True
         self.highlight_button()
-        return f"\'{"X" if self.num + 1 == 10 else self.num + 1}\' button clicked on"
 
     def unclick(self):
         self.clicked = False
         self.unhighlight_button()
-        return f"\'{"X" if self.num + 1 == 10 else self.num + 1}\' button clicked off"
