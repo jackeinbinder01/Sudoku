@@ -84,6 +84,20 @@ class View:
                         print(f"[View] - {button.on_click()}")
                 for button in self.mode_buttons:
                     if button.is_clicked(pos):
+                        if button == self.normal_button:
+                            if self.candidate_button.is_on and not self.candidate_button.auto_candidate:
+                                self.candidate_button.unclick()
+                            if self.candidate_button.auto_candidate:
+                                self.candidate_button.on_click()
+                            if self.normal_button.is_on and not self.candidate_button.is_on:
+                                break
+                        if button == self.candidate_button:
+                            if self.normal_button.is_on and not self.candidate_button.auto_candidate:
+                                self.normal_button.unclick()
+                            if self.candidate_button.is_on:
+                                self.normal_button.click()
+                            if self.candidate_button.auto_candidate:
+                                self.normal_button.unclick()
                         print(f"[View] - {button.on_click()}")
                 for button in self.number_buttons:
                     if button.is_clicked(pos):
@@ -91,9 +105,6 @@ class View:
                 for button in self.puzzle_buttons:
                     if button.is_clicked(pos):
                         print(f"[View] - {button.on_click()}")
-
-
-
                 for component in self.components:
                     if component.is_clicked(pos):
                         print(f"[View] - {component.on_click()}")
