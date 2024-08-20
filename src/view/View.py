@@ -12,7 +12,7 @@ from src.view.components.NumberButton import NumberButton
 from src.view.components.PuzzleButton import PuzzleButton
 
 '''
-Night mode Sudoku view
+Sudoku app view
 '''
 
 
@@ -26,7 +26,7 @@ class View:
         # add components
         self.game_board = GameBoard(self.game_window)
 
-        self.easy_button = DifficultyButton(self.game_window, "Easy", 1)
+        self.easy_button = DifficultyButton(self.game_window, "Easy", 1, True)
         self.medium_button = DifficultyButton(self.game_window, "Medium", 2)
         self.hard_button = DifficultyButton(self.game_window, "Hard", 3)
         self.new_puzzle_button = NewPuzzleButton(self.game_window, "New Puzzle", 4)
@@ -80,8 +80,18 @@ class View:
                 pos = pygame.mouse.get_pos()
                 for button in self.difficulty_buttons:
                     if button.is_clicked(pos):
-                        [each.unclick() for each in self.difficulty_buttons if each.is_on]
+                        [each.unclick() for each in self.difficulty_buttons if each.is_on and each != button]
                         print(f"[View] - {button.on_click()}")
+                        [self.new_puzzle_button.arm_button() for each in self.difficulty_buttons if each.is_on]
+
+                        selected = False
+                        for each in self.difficulty_buttons:
+                            if each.is_on:
+                                selected = True
+
+                        if not selected:
+                            self.new_puzzle_button.disarm_button()
+
                 for button in self.mode_buttons:
                     if button.is_clicked(pos):
                         if button == self.normal_button:

@@ -1,3 +1,5 @@
+import time
+
 import pygame
 from src.resources import settings as s
 
@@ -11,7 +13,8 @@ class NewPuzzleButton:
         self.x = s.NEW_PUZZLE_BUTTON_X + (self.width * self.num)
         self.y = s.NEW_PUZZLE_BUTTON_Y
         self.draw_button()
-        self.is_on = False
+        self.clicked = False
+        self.is_armed = False
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -32,9 +35,10 @@ class NewPuzzleButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
-    def highlight_button(self):
-        pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height))
-        self.draw_text(s.BLACK)
+    def highlight_button(self, button_color, text_color=s.BLACK):
+        pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
+        self.draw_text(text_color)
+        pygame.display.update()
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
@@ -42,14 +46,24 @@ class NewPuzzleButton:
         self.draw_text(s.WHITE)
 
     def on_click(self):
-        return self.click() if not self.is_on else self.unclick()
+        if not self.clicked:
+            self.click()
+            time.sleep(0.15)
+            self.unclick()
+        return f"\'{self.text}\' button clicked"
 
     def click(self):
-        self.is_on = True
-        self.highlight_button()
-        return f"\'{self.text}\' button clicked on"
+        self.clicked = True
+        self.highlight_button(s.HIGHLIGHT)
 
     def unclick(self):
-        self.is_on = False
+        self.clicked = False
         self.unhighlight_button()
-        return f"\'{self.text}\' button clicked off"
+
+    def arm_button(self):
+        self.is_armed = True
+        self.highlight_button(s.BLUE, s.WHITE)
+
+    def disarm_button(self):
+        self.is_armed = False
+        self.unhighlight_button()
