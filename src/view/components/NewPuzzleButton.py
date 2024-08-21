@@ -62,7 +62,7 @@ class NewPuzzleButton:
 
     def arm_button(self):
         self.is_armed = True
-        self.highlight_button(s.BLUE, s.WHITE)
+        self.highlight_button(s.RED, s.WHITE)
 
     def disarm_button(self):
         self.is_armed = False
