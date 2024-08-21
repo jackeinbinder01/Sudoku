@@ -71,6 +71,56 @@ class View:
             self.handle_events()
             self.update_display()
 
+    def reset_display(self, difficulty="easy"):
+        self.game_window = pygame.display.set_mode(s.SCREEN_SIZE)
+        pygame.display.set_caption(s.WINDOW_TITLE)
+        pygame.font.init()
+
+        # add components
+        self.game_board = GameBoard(self.game_window)
+
+        self.easy_button, self.medium_button, self.hard_button = (
+            DifficultyButton(self.game_window, text, num, difficulty.lower() == key)
+            for key, num, text in [("easy", 1, "Easy"), ("medium", 2, "Medium"), ("hard", 3, "Hard")]
+        )
+
+        self.new_puzzle_button = NewPuzzleButton(self.game_window, "New Puzzle", 4)
+
+        self.clock = Clock(self.game_window)
+        self.normal_button = NormalButton(self.game_window)
+        self.candidate_button = CandidateButton(self.game_window)
+        self.number_board = NumberBoard(self.game_window)
+        self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
+
+        self.reset_puzzle_button = PuzzleButton(self.game_window, "New Reset Puzzle", 1)
+        self.reveal_cell_button = PuzzleButton(self.game_window, "New Reveal Cell", 2)
+        self.give_up_button = PuzzleButton(self.game_window, "New Give Up", 3)
+
+        self.difficulty_buttons = [
+            self.easy_button,
+            self.medium_button,
+            self.hard_button,
+        ]
+
+        self.mode_buttons = [
+            self.normal_button,
+            self.candidate_button,
+        ]
+
+        self.puzzle_buttons = [
+            self.reset_puzzle_button,
+            self.reveal_cell_button,
+            self.give_up_button
+        ]
+
+        self.components = {
+            self.clock,
+            self.new_puzzle_button
+        }
+
+        # gameloop cond
+        self.running = True
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -118,6 +168,9 @@ class View:
                         [each.unclick() for each in self.game_board.get_game_cells() if each.is_on and each != cell]
                         print(f"[View] - {cell.on_click()}")
                         print(f"[View] - Selected Cell = {self.game_board.get_selected_cell()}")
+
+                if self.new_puzzle_button.is_clicked(pos):
+                    self.reset_display()
 
     def update_display(self):
         self.clock.draw_clock()
