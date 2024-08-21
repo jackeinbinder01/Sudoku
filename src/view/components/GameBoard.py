@@ -15,19 +15,7 @@ class GameBoard:
         self.game_cells = [GameCell(self.game_window, i) for i in range(9 * 9)]
 
     def draw_grid(self):
-
-        for i in range(10):
-            x = self.x + i * self.cell_size
-            y = self.y + i * self.cell_size
-
-            # Thick lines for 3x3 boxes
-            if i % 3 == 0:
-                pygame.draw.line(self.game_window, s.WHITE, (x, self.y), (x, self.y + self.grid_size), 4)
-                pygame.draw.line(self.game_window, s.WHITE, (self.x, y), (self.x + self.grid_size, y), 4)
-            # Thin lines otherwise
-            else:
-                pygame.draw.line(self.game_window, s.WHITE, (x, self.y), (x, self.y + self.grid_size), 1)
-                pygame.draw.line(self.game_window, s.WHITE, (self.x, y), (self.x + self.grid_size, y), 1)
+        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.grid_size, self.grid_size))
 
     def get_game_cells(self):
         return self.game_cells

@@ -12,13 +12,26 @@ class GameCell:
         self.col = num % 9
         self.width = self.height = s.CELL_SIZE
 
-        self.x = s.GAME_BOARD_X + (self.width * self.col)
-        self.y = s.GAME_BOARD_Y + (self.height * self.row)
+        self.rise = 4
+        self.run = 4
+
+        self.x = s.GAME_BOARD_X + 4 + (self.width * self.col + (1 * self.col))
+        self.y = s.GAME_BOARD_Y + 4 + (self.height * self.row + (1 * self.row))
+
+        if self.row >= 3:
+            self.y = self.y + 3
+        if self.row >= 6:
+            self.y = self.y + 3
+
+        if self.col >= 3:
+            self.x = self.x + 3
+        if self.col >= 6:
+            self.x = self.x + 3
 
         self.number = None
         self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
 
-        self.draw_text(s.WHITE)
+        self.draw_cell()
 
         self.is_on = False
 
@@ -39,6 +52,10 @@ class GameCell:
         if 1 <= number <= 9:
             self.number = number
 
+    def draw_cell(self):
+        pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
+        self.draw_text(s.WHITE)
+
     def draw_text(self, color):
         font = pygame.font.Font(None, 32)
         text_surface = font.render(str(self.get_inner_square()), True, color)
@@ -56,7 +73,6 @@ class GameCell:
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
         self.draw_text(s.WHITE)
 
     def on_click(self):
