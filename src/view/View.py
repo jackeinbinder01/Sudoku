@@ -84,12 +84,7 @@ class View:
                         print(f"[View] - {button.on_click()}")
                         [self.new_puzzle_button.arm_button() for each in self.difficulty_buttons if each.is_on]
 
-                        selected = False
-                        for each in self.difficulty_buttons:
-                            if each.is_on:
-                                selected = True
-
-                        if not selected:
+                        if not any([each.is_on for each in self.difficulty_buttons]):
                             self.new_puzzle_button.disarm_button()
 
                 for button in self.mode_buttons:
@@ -127,6 +122,8 @@ class View:
     def update_display(self):
         self.clock.draw_clock()
         pygame.display.flip()
+
+
 
 
 '''
