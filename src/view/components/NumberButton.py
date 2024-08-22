@@ -64,7 +64,7 @@ class NumberButton:
             self.click()
             time.sleep(0.15)
             self.unclick()
-        return f"'{"X" if self.num + 1 == 10 else self.num + 1}' button clicked"
+        return f"'{'X' if self.num + 1 == 10 else self.num + 1}' button clicked"
 
     def click(self):
         self.clicked = True
