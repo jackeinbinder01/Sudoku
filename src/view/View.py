@@ -1,6 +1,6 @@
 import pygame
 
-from src.resources import settings as s
+from src.resources.settings import settings as s
 from src.view.components.Clock import Clock
 from src.view.components.DifficultyButton import DifficultyButton
 from src.view.components.GameBoard import GameBoard
@@ -19,52 +19,41 @@ Sudoku app view
 class View:
 
     def __init__(self):
+
+        self.game_window = None
+        self.game_board = None
+        self.easy_button = None
+        self.medium_button = None
+        self.hard_button = None
+        self.new_puzzle_button = None
+        self.clock = None
+        self.normal_button = None
+        self.candidate_button = None
+        self.number_board = None
+        self.number_buttons = None
+        self.reset_puzzle_button = None
+        self.reveal_cell_button = None
+        self.give_up_button = None
+
+        self.difficulty_buttons = []
+        self.mode_buttons = []
+        self.puzzle_buttons = []
+        self.components = []
+
+        self.default_difficulty = "easy"
+        self.reset_display(self.default_difficulty)
+
+        # gameloop
+        self.running = True
+
+    def set_default_difficulty(self, difficulty):
+        if difficulty.lower() in ['easy', 'medium', 'hard']:
+            self.default_difficulty = difficulty.lower
+
+    def init_game_window(self):
         self.game_window = pygame.display.set_mode(s.SCREEN_SIZE)
         pygame.display.set_caption(s.WINDOW_TITLE)
         pygame.font.init()
-
-        # add components
-        self.game_board = GameBoard(self.game_window)
-
-        self.easy_button = DifficultyButton(self.game_window, "Easy", 1, True)
-        self.medium_button = DifficultyButton(self.game_window, "Medium", 2)
-        self.hard_button = DifficultyButton(self.game_window, "Hard", 3)
-        self.new_puzzle_button = NewPuzzleButton(self.game_window, "New Puzzle", 4)
-
-        self.clock = Clock(self.game_window)
-        self.normal_button = NormalButton(self.game_window)
-        self.candidate_button = CandidateButton(self.game_window)
-        self.number_board = NumberBoard(self.game_window)
-        self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
-
-        self.reset_puzzle_button = PuzzleButton(self.game_window, "Reset Puzzle", 1)
-        self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
-        self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
-
-        self.difficulty_buttons = [
-            self.easy_button,
-            self.medium_button,
-            self.hard_button,
-        ]
-
-        self.mode_buttons = [
-            self.normal_button,
-            self.candidate_button,
-        ]
-
-        self.puzzle_buttons = [
-            self.reset_puzzle_button,
-            self.reveal_cell_button,
-            self.give_up_button
-        ]
-
-        self.components = {
-            self.clock,
-            self.new_puzzle_button
-        }
-
-        # gameloop cond
-        self.running = True
 
     def display(self):
         while self.running:
@@ -72,13 +61,15 @@ class View:
             self.update_display()
 
     def reset_display(self, difficulty="easy"):
-        self.game_window = pygame.display.set_mode(s.SCREEN_SIZE)
-        pygame.display.set_caption(s.WINDOW_TITLE)
-        pygame.font.init()
+        self.init_game_window()
+        self.init_components(difficulty)
+        self.package_components()
 
-        # add components
+        # gameloop
+        self.running = True
+
+    def init_components(self, difficulty="easy"):
         self.game_board = GameBoard(self.game_window)
-
         self.easy_button, self.medium_button, self.hard_button = (
             DifficultyButton(self.game_window, text, num, difficulty.lower() == key)
             for key, num, text in [("easy", 1, "Easy"), ("medium", 2, "Medium"), ("hard", 3, "Hard")]
@@ -92,10 +83,11 @@ class View:
         self.number_board = NumberBoard(self.game_window)
         self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
 
-        self.reset_puzzle_button = PuzzleButton(self.game_window, "New Reset Puzzle", 1)
-        self.reveal_cell_button = PuzzleButton(self.game_window, "New Reveal Cell", 2)
-        self.give_up_button = PuzzleButton(self.game_window, "New Give Up", 3)
+        self.reset_puzzle_button = PuzzleButton(self.game_window, "Reset Puzzle", 1)
+        self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
+        self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
 
+    def package_components(self):
         self.difficulty_buttons = [
             self.easy_button,
             self.medium_button,
@@ -117,9 +109,6 @@ class View:
             self.clock,
             self.new_puzzle_button
         }
-
-        # gameloop cond
-        self.running = True
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -175,8 +164,6 @@ class View:
     def update_display(self):
         self.clock.draw_clock()
         pygame.display.flip()
-
-
 
 
 '''

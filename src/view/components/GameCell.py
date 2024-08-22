@@ -1,6 +1,8 @@
+import os
+
 import pygame
 
-from src.resources import settings as s
+from src.resources.settings import settings as s
 
 
 class GameCell:
@@ -35,6 +37,37 @@ class GameCell:
 
         self.is_on = False
 
+        self.candidates = []
+        self.display_number_error()
+
+    def display_number_error(self):
+        current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        error_icon_path = os.path.join(current_dir + "/resources/images/number_error_icon.png")
+        error_icon = pygame.image.load(error_icon_path)
+
+        error_cell_size = self.width / 3
+
+        x = self.x + error_cell_size / 2 + (error_cell_size * 2) - 10
+        y = self.y + error_cell_size / 2 + (error_cell_size * 2) - 10
+
+        self.game_window.blit(error_icon, (x, y))
+
+    def draw_candidate(self, num):
+        font = pygame.font.Font(None, 16)
+        text_surface = font.render(str(num), True, s.WHITE)
+
+        candidate_cell_size = self.width / 3
+
+        row = (num - 1) // 3
+        col = (num - 1) % 3
+
+        x = self.x + candidate_cell_size / 2 + (candidate_cell_size * col)
+        y = self.y + candidate_cell_size / 2 + (candidate_cell_size * row)
+
+        text_rect = text_surface.get_rect(center=(x, y))
+
+        self.game_window.blit(text_surface, text_rect)
+
     def is_clicked(self, position):
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
@@ -54,7 +87,7 @@ class GameCell:
 
     def draw_cell(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        self.draw_text(s.WHITE)
+        # self.draw_text(s.WHITE)
 
     def draw_text(self, color):
         font = pygame.font.Font(None, 32)

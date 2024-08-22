@@ -1,7 +1,7 @@
 import time
 
 import pygame
-from src.resources import settings as s
+from src.resources.settings import settings as s
 
 
 class NewPuzzleButton:
