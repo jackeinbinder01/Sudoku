@@ -20,7 +20,6 @@ class CandidateButton:
     def draw_text(self, text, color):
         font = pygame.font.Font(None, 18)
         text_surface = font.render(text, True, color)
-
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
@@ -32,17 +31,23 @@ class CandidateButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
+    def toggle_highlight(self):
+        if self.is_on and self.auto_candidate:
+            self.highlight_button("Auto Candidate")
+        elif self.is_on:
+            self.highlight_button(self.text)
+        else:
+            self.unhighlight_button()
+
     def highlight_button(self, text):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height))
         self.draw_text(text, s.BLACK)
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(self.text, s.WHITE)
+        self.draw_button()
 
     def on_click(self):
-
         if self.is_on and not self.auto_candidate:
             return self.activate_auto_candidate()
         if self.is_on and self.auto_candidate:
@@ -52,20 +57,20 @@ class CandidateButton:
 
     def click(self):
         self.is_on = True
-        self.highlight_button(self.text)
-        return f"\'{self.text}\' button clicked on"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked on"
 
     def unclick(self):
         self.is_on = False
         self.auto_candidate = False
-        self.unhighlight_button()
-        return f"\'{self.text}\' button clicked off"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked off"
 
     def activate_auto_candidate(self):
         self.is_on = True
         self.auto_candidate = True
-        self.highlight_button("Auto Candidate")
-        return f"\'{self.text}\' button clicked on, auto-candidate activated"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked on, auto-candidate activated"
 
     def deactivate_auto_candidate(self):
         self.auto_candidate = False

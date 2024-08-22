@@ -11,18 +11,16 @@ class PuzzleButton:
         self.width, self.height = s.PUZZLE_BUTTON_SIZE
         self.x = s.PUZZLE_BUTTON_X + (self.width + s.IB_PADDING) * self.num
         self.y = s.PUZZLE_BUTTON_Y
-
         self.draw_button()
         self.clicked = False
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_text(self.text, s.WHITE)
 
-    def draw_text(self, color):
+    def draw_text(self, text, color):
         font = pygame.font.Font(None, 18)
-        text_surface = font.render(self.text, True, color)
-
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
@@ -34,16 +32,19 @@ class PuzzleButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
+    def toggle_highlight(self):
+        if self.clicked:
+            self.highlight_button()
+        else:
+            self.unhighlight_button()
+
     def highlight_button(self):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height))
-        self.draw_text(s.BLACK)
-        pygame.display.update()
+        self.draw_text(self.text, s.BLACK)
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
-        pygame.display.update()
+        self.draw_button()
 
     def on_click(self):
         if not self.clicked:
@@ -54,8 +55,8 @@ class PuzzleButton:
 
     def click(self):
         self.clicked = True
-        self.highlight_button()
+        self.toggle_highlight()
 
     def unclick(self):
         self.clicked = False
-        self.unhighlight_button()
+        self.toggle_highlight()

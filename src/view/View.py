@@ -47,7 +47,7 @@ class View:
         self.running = True
 
     def set_default_difficulty(self, difficulty):
-        if difficulty.lower() in ['easy', 'medium', 'hard']:
+        if difficulty.lower() in ["easy", "medium", "hard"]:
             self.default_difficulty = difficulty.lower
 
     def init_game_window(self):
@@ -70,22 +70,25 @@ class View:
 
     def init_components(self, difficulty="easy"):
         self.game_board = GameBoard(self.game_window)
+
         self.easy_button, self.medium_button, self.hard_button = (
             DifficultyButton(self.game_window, text, num, difficulty.lower() == key)
             for key, num, text in [("easy", 1, "Easy"), ("medium", 2, "Medium"), ("hard", 3, "Hard")]
         )
-
         self.new_puzzle_button = NewPuzzleButton(self.game_window, "New Puzzle", 4)
 
         self.clock = Clock(self.game_window)
+
         self.normal_button = NormalButton(self.game_window)
         self.candidate_button = CandidateButton(self.game_window)
+
         self.number_board = NumberBoard(self.game_window)
         self.number_buttons = [NumberButton(self.game_window, i) for i in range(10)]
 
-        self.reset_puzzle_button = PuzzleButton(self.game_window, "Reset Puzzle", 1)
-        self.reveal_cell_button = PuzzleButton(self.game_window, "Reveal Cell", 2)
-        self.give_up_button = PuzzleButton(self.game_window, "Give Up", 3)
+        self.reset_puzzle_button, self.reveal_cell_button, self.give_up_button = (
+            PuzzleButton(self.game_window, text, num)
+            for text, num in [("Reset Puzzle", 1), ("Reveal Cell", 2), ("Give Up", 3)]
+        )
 
     def package_components(self):
         self.difficulty_buttons = [

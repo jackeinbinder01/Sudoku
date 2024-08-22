@@ -9,26 +9,21 @@ class DifficultyButton:
         self.text = text
         self.num = num - 1
         self.width, self.height = s.DIFFICULTY_BUTTON_SIZE
-
         self.x = s.DIFFICULTY_BUTTON_X + (self.width * self.num)
         self.y = s.DIFFICULTY_BUTTON_Y
-
         self.is_on = False
         self.pre_selected = pre_selected
-
         self.draw_button()
-
         if pre_selected:
             self.highlight_button(s.WHITE)
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_text(self.text, s.WHITE)
 
-    def draw_text(self, color):
+    def draw_text(self, text, color):
         font = pygame.font.Font(None, 18)
-        text_surface = font.render(self.text, True, color)
-
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
@@ -40,14 +35,19 @@ class DifficultyButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
-    def highlight_button(self, color):
+    def toggle_highlight(self):
+        if self.is_on:
+            self.highlight_button()
+        else:
+            self.unhighlight_button()
+
+    def highlight_button(self, color=s.HIGHLIGHT):
         pygame.draw.rect(self.game_window, color, (self.x, self.y, self.width, self.height))
-        self.draw_text(s.BLACK)
+        self.draw_text(self.text, s.BLACK)
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_button()
         if self.pre_selected:
             self.highlight_button(s.WHITE)
 
@@ -56,13 +56,13 @@ class DifficultyButton:
 
     def click(self):
         self.is_on = True
-        self.highlight_button(s.HIGHLIGHT)
-        return f"\'{self.text}\' button clicked on"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked on"
 
     def unclick(self):
         self.is_on = False
-        self.unhighlight_button()
-        return f"\'{self.text}\' button clicked off"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked off"
 
     def set_pre_selected(self):
         self.pre_selected = True

@@ -33,7 +33,6 @@ class Clock:
         text_surface = font.render(time_str, True, s.WHITE)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
         self.game_window.blit(text_surface, text_rect)
-        pygame.display.update()
 
     def get_middle_x_y(self):
         return self.x + (self.width / 2), self.y + (self.height / 2)

@@ -10,11 +10,10 @@ class GameBoard:
         self.cell_size = s.CELL_SIZE
         self.x = s.GAME_BOARD_X
         self.y = s.GAME_BOARD_Y
-        self.draw_grid()
-
+        self.draw_background()
         self.game_cells = [GameCell(self.game_window, i) for i in range(9 * 9)]
 
-    def draw_grid(self):
+    def draw_background(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.grid_size, self.grid_size))
 
     def get_game_cells(self):
@@ -24,4 +23,3 @@ class GameBoard:
         for cell in self.game_cells:
             if cell.is_on:
                 return cell.get_row_col()
-        return None

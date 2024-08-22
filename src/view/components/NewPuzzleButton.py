@@ -18,12 +18,11 @@ class NewPuzzleButton:
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_text(self.text, s.WHITE)
 
-    def draw_text(self, color):
+    def draw_text(self, text, color):
         font = pygame.font.Font(None, 18)
-        text_surface = font.render(self.text, True, color)
-
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
@@ -35,30 +34,34 @@ class NewPuzzleButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
-    def highlight_button(self, button_color, text_color=s.BLACK):
+    def toggle_highlight(self):
+        if self.clicked:
+            self.highlight_button()
+        else:
+            self.unhighlight_button()
+
+    def highlight_button(self, button_color=s.HIGHLIGHT, text_color=s.BLACK):
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
-        self.draw_text(text_color)
-        pygame.display.update()
+        self.draw_text(self.text, text_color)
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_button()
 
     def on_click(self):
         if not self.clicked:
             self.click()
             time.sleep(0.15)
             self.unclick()
-        return f"\'{self.text}\' button clicked"
+        return f"'{self.text}' button clicked"
 
     def click(self):
         self.clicked = True
-        self.highlight_button(s.HIGHLIGHT)
+        self.toggle_highlight()
 
     def unclick(self):
         self.clicked = False
-        self.unhighlight_button()
+        self.toggle_highlight()
 
     def arm_button(self):
         self.is_armed = True

@@ -14,12 +14,11 @@ class NormalButton:
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_text(self.text, s.WHITE)
 
-    def draw_text(self, color):
+    def draw_text(self, text, color):
         font = pygame.font.Font(None, 18)
-        text_surface = font.render(self.text, True, color)
-
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
@@ -31,24 +30,29 @@ class NormalButton:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
+    def toggle_highlight(self):
+        if self.is_on:
+            self.highlight_button()
+        else:
+            self.unhighlight_button()
+
     def highlight_button(self):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height))
-        self.draw_text(s.BLACK)
+        self.draw_text(self.text, s.BLACK)
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-        self.draw_text(s.WHITE)
+        self.draw_button()
 
     def on_click(self):
         return self.click() if not self.is_on else self.unclick()
 
     def click(self):
         self.is_on = True
-        self.highlight_button()
-        return f"\'{self.text}\' button clicked on"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked on"
 
     def unclick(self):
         self.is_on = False
-        self.unhighlight_button()
-        return f"\'{self.text}\' button clicked off"
+        self.toggle_highlight()
+        return f"'{self.text}' button clicked off"
