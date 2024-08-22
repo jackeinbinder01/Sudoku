@@ -5,6 +5,8 @@ from src.controller.Controller import Controller
 '''
 Main driver for the Sudoku app
 '''
+
+
 def main():
     model = Model()
     view = View()

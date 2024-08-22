@@ -12,4 +12,3 @@ class NumberBoard:
 
     def draw_number_board(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
-

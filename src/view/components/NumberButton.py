@@ -47,15 +47,17 @@ class NumberButton:
         if self.clicked:
             self.highlight_button()
         else:
-            self.highlight_button()
+            self.unhighlight_button()
 
     def highlight_button(self):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height),0, 10)
         self.draw_number(s.BLACK)
+        pygame.display.update()
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height), 0, 10)
         self.draw_button()
+        pygame.display.update()
 
     def on_click(self):
         if not self.clicked:

@@ -12,13 +12,18 @@ class GameCell:
         self.row = (num // 9)
         self.col = num % 9
         self.width = self.height = s.CELL_SIZE
-        self.x = s.GAME_BOARD_X + s.THICK_BORDER_WEIGHT + (self.width * self.col + (s.THIN_BORDER_WEIGHT * self.col)) + (self.col // 3) * 3
-        self.y = s.GAME_BOARD_Y + s.THICK_BORDER_WEIGHT + (self.height * self.row + (s.THIN_BORDER_WEIGHT * self.row)) + (self.row // 3) * 3
+        self.x = s.GAME_BOARD_X + s.THICK_BORDER_WEIGHT + (
+                    self.width * self.col + (s.THIN_BORDER_WEIGHT * self.col)) + (self.col // 3) * 3
+        self.y = s.GAME_BOARD_Y + s.THICK_BORDER_WEIGHT + (
+                    self.height * self.row + (s.THIN_BORDER_WEIGHT * self.row)) + (self.row // 3) * 3
         self.number = ""
         self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
         self.draw_cell()
         self.is_on = False
         self.candidates = []
+
+    def __str__(self):
+        return f"cell at '{self.get_row_col()}' set to '{self.number}'"
 
     def draw_candidate(self, num):
         font = pygame.font.Font(None, 16)
@@ -58,16 +63,16 @@ class GameCell:
     def get_number(self):
         return self.number
 
-    def get_inner_square(self):
-        return self.inner_square
-
     def set_number(self, number):
         if 1 <= number <= 9:
             self.number = number
 
-    def draw_cell(self):
-        pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        self.draw_text(self.get_number(), s.WHITE)
+    def get_inner_square(self):
+        return self.inner_square
+
+    def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE):
+        pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
+        self.draw_text(self.get_number(), text_color)
 
     def draw_text(self, text, color):
         font = pygame.font.Font(None, 32)
@@ -86,12 +91,10 @@ class GameCell:
             self.unhighlight_button()
 
     def highlight_button(self, color=s.HIGHLIGHT):
-        pygame.draw.rect(self.game_window, color, (self.x, self.y, self.width, self.height))
-        self.draw_text(self.get_number(), s.BLACK)
+        self.draw_cell(color, s.BLACK)
 
     def unhighlight_button(self):
-        pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
-        self.draw_text(self.get_number(), s.WHITE)
+        self.draw_cell()
 
     def on_click(self):
         return self.click() if not self.is_on else self.unclick()

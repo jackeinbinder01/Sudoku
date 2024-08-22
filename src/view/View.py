@@ -168,6 +168,8 @@ class View:
         self.clock.draw_clock()
         pygame.display.flip()
 
+    def get_game_board(self):
+        return self.game_board
 
 '''
 Test Main

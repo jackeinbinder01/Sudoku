@@ -22,4 +22,4 @@ class GameBoard:
     def get_selected_cell(self):
         for cell in self.game_cells:
             if cell.is_on:
-                return cell.get_row_col()
+                return cell

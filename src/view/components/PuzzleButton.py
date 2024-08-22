@@ -41,10 +41,12 @@ class PuzzleButton:
     def highlight_button(self):
         pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height))
         self.draw_text(self.text, s.BLACK)
+        pygame.display.update()
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
         self.draw_button()
+        pygame.display.update()
 
     def on_click(self):
         if not self.clicked:

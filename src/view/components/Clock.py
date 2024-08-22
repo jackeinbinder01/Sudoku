@@ -20,17 +20,22 @@ class Clock:
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
         self.display_time()
 
-    def display_time(self):
+    def get_time(self):
         current_time = time.time()
         if not self.is_paused:
             self.elapsed_time = current_time - self.start_time
 
-        minutes = int(self.elapsed_time / 60)
+        hours = int(self.elapsed_time // 3600)
+        minutes = int((self.elapsed_time % 3600) // 60)
         seconds = int(self.elapsed_time % 60)
-        time_str = f"{minutes:02}:{seconds:02}"
+        if hours > 0:
+            return f"{hours}:{minutes}:{seconds:02}"
+        else:
+            return f"{minutes}:{seconds:02}"
 
+    def display_time(self):
         font = pygame.font.Font(None, 80)
-        text_surface = font.render(time_str, True, s.WHITE)
+        text_surface = font.render(self.get_time(), True, s.WHITE)
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
         self.game_window.blit(text_surface, text_rect)
 
