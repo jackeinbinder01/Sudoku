@@ -71,7 +71,7 @@ class Controller:
 
     def handle_number_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
-        if self.view.game_board.get_selected_cell() == "":
+        if self.view.game_board.get_selected_cell() in ["", None]:
             return
         elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable:
             if self.view.normal_button.is_on:
