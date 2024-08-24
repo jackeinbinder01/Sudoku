@@ -13,26 +13,39 @@ class GameCell:
         self.col = num % 9
         self.width = self.height = s.CELL_SIZE
         self.x = s.GAME_BOARD_X + s.THICK_BORDER_WEIGHT + (
-                    self.width * self.col + (s.THIN_BORDER_WEIGHT * self.col)) + (self.col // 3) * 3
+                self.width * self.col + (s.THIN_BORDER_WEIGHT * self.col)) + (self.col // 3) * 3
         self.y = s.GAME_BOARD_Y + s.THICK_BORDER_WEIGHT + (
-                    self.height * self.row + (s.THIN_BORDER_WEIGHT * self.row)) + (self.row // 3) * 3
+                self.height * self.row + (s.THIN_BORDER_WEIGHT * self.row)) + (self.row // 3) * 3
         self.number = ""
         self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
+        self.clear_cell = False
+        self.user_candidates = []
+        self.auto_candidates = []
         self.draw_cell()
         self.is_on = False
-        self.candidates = []
+        self.editable = True
+
 
     def __str__(self):
         return f"cell at '{self.get_row_col()}' set to '{self.number}'"
 
-    def draw_candidate(self, num):
+    def add_candidate(self, candidate):
+        if candidate in self.user_candidates:
+            self.user_candidates.remove(candidate)
+        else:
+            self.user_candidates.append(candidate)
+
+    def draw_candidate(self, num, color=s.WHITE):
+        if num == "X":
+            return
+
         font = pygame.font.Font(None, 16)
-        text_surface = font.render(str(num), True, s.WHITE)
+        text_surface = font.render(str(num), True, color)
 
         candidate_cell_size = self.width / 3
 
-        row = (num - 1) // 3
-        col = (num - 1) % 3
+        row = (int(num) - 1) // 3
+        col = (int(num) - 1) % 3
 
         x = self.x + candidate_cell_size / 2 + (candidate_cell_size * col)
         y = self.y + candidate_cell_size / 2 + (candidate_cell_size * row)
@@ -40,6 +53,7 @@ class GameCell:
         text_rect = text_surface.get_rect(center=(x, y))
 
         self.game_window.blit(text_surface, text_rect)
+        print(f"draw candidate executed: {num}")
 
     def display_number_error(self):
         current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -64,15 +78,39 @@ class GameCell:
         return self.number
 
     def set_number(self, number):
-        if 1 <= number <= 9:
+        if number == "X":
+            self.clear_cell = True
+        elif 1 <= number <= 9:
             self.number = number
+
+    def is_editable(self):
+        return self.editable
+
+    def set_editable(self, editable=True):
+        self.editable = editable
 
     def get_inner_square(self):
         return self.inner_square
 
     def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE):
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
-        self.draw_text(self.get_number(), text_color)
+
+        if self.clear_cell and self.user_candidates:
+            for each in self.user_candidates:
+                self.number = ""
+                self.draw_candidate(each, text_color)
+                self.clear_cell = False
+        elif self.clear_cell:
+            self.number = ""
+            self.clear_cell = False
+            return
+
+        if self.number == "" and self.user_candidates:
+            for each in self.user_candidates:
+                self.draw_candidate(each, text_color)
+
+        else:
+            self.draw_text(str(self.get_number()), text_color)
 
     def draw_text(self, text, color):
         font = pygame.font.Font(None, 32)

@@ -15,6 +15,9 @@ class Clock:
         self.elapsed_time = 0
         self.draw_clock()
 
+    def __str__(self):
+        return f'Clock clicked'
+
     def draw_clock(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -29,9 +32,9 @@ class Clock:
         minutes = int((self.elapsed_time % 3600) // 60)
         seconds = int(self.elapsed_time % 60)
         if hours > 0:
-            return f"{hours}:{minutes}:{seconds:02}"
+            return f"{hours}:{minutes:02}:{seconds:02}"
         else:
-            return f"{minutes}:{seconds:02}"
+            return f"{minutes:02}:{seconds:02}"
 
     def display_time(self):
         font = pygame.font.Font(None, 80)

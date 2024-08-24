@@ -13,6 +13,9 @@ class CandidateButton:
         self.is_on = False
         self.auto_candidate = False
 
+    def __str__(self):
+        return f"{self.text} button"
+
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
         self.draw_text(self.text, s.WHITE)

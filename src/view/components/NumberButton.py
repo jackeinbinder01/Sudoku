@@ -14,6 +14,9 @@ class NumberButton:
         self.draw_button()
         self.clicked = False
 
+    def __str__(self):
+        return f"'{'X' if self.num + 1 == 10 else self.num + 1}' button clicked"
+
     def draw_button(self):
         row = self.num // 5
         col = self.num % 5
@@ -35,6 +38,12 @@ class NumberButton:
         text_rect = text_surface.get_rect(center=self.get_middle_x_y())
 
         self.game_window.blit(text_surface, text_rect)
+
+    def get_number(self):
+        if self.num + 1 == 10:
+            return "X"
+        else:
+            return self.num + 1
 
     def get_middle_x_y(self):
         return self.x + (self.width / 2), self.y + (self.height / 2)

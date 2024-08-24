@@ -43,16 +43,10 @@ class View:
         self.default_difficulty = "easy"
         self.reset_display(self.default_difficulty)
 
-        self.observer = None
+
 
         # gameloop
         self.running = True
-
-    def set_observer(self, observer):
-        self.observer = observer
-
-    def notify_observer(self, event, button):
-        self.observer.process_events(event, button)
 
     def set_default_difficulty(self, difficulty):
         if difficulty.lower() in ["easy", "medium", "hard"]:
@@ -130,27 +124,47 @@ class View:
                 pos = pygame.mouse.get_pos()
                 for button in self.difficulty_buttons:
                     if button.is_clicked(pos):
-                        self.notify_observer("difficulty_button_click", button)
+                        [each.unclick() for each in self.difficulty_buttons if each.is_on and each != button]
+                        print(f"[View] - {button.on_click()}")
+                        [self.new_puzzle_button.arm_button() for each in self.difficulty_buttons if each.is_on]
+
+                        if not any([each.is_on for each in self.difficulty_buttons]):
+                            self.new_puzzle_button.disarm_button()
+
                 for button in self.mode_buttons:
                     if button.is_clicked(pos):
-                        self.notify_observer("mode_button_click", button)
-
+                        if button == self.normal_button:
+                            if self.candidate_button.is_on and not self.candidate_button.auto_candidate:
+                                self.candidate_button.unclick()
+                            if self.candidate_button.auto_candidate:
+                                self.candidate_button.on_click()
+                            if self.normal_button.is_on and not self.candidate_button.is_on:
+                                break
+                        if button == self.candidate_button:
+                            if self.normal_button.is_on and not self.candidate_button.auto_candidate:
+                                self.normal_button.unclick()
+                            if self.candidate_button.is_on:
+                                self.normal_button.click()
+                            if self.candidate_button.auto_candidate:
+                                self.normal_button.unclick()
+                        print(f"[View] - {button.on_click()}")
                 for button in self.number_buttons:
                     if button.is_clicked(pos):
-                        self.notify_observer("number_button_click", button)
+                        print(f"[View] - {button.on_click()}")
                 for button in self.puzzle_buttons:
                     if button.is_clicked(pos):
-                        self.notify_observer("puzzle_button_click", button)
+                        print(f"[View] - {button.on_click()}")
                 for component in self.components:
                     if component.is_clicked(pos):
-                        self.notify_observer("other_component_clicked", component)
-                if self.clock.is_clicked(pos):
-                    self.notify_observer("clock_click", self.clock)
-                if self.new_puzzle_button.is_clicked(pos):
-                    self.notify_observer("new_puzzle_button_click", self.new_puzzle_button)
+                        print(f"[View] - {component.on_click()}")
                 for cell in self.game_board.get_game_cells():
                     if cell.is_clicked(pos):
-                        self.notify_observer("cell_click", cell)
+                        [each.unclick() for each in self.game_board.get_game_cells() if each.is_on and each != cell]
+                        print(f"[View] - {cell.on_click()}")
+                        print(f"[View] - Selected Cell = {self.game_board.get_selected_cell()}")
+
+                if self.new_puzzle_button.is_clicked(pos):
+                    self.reset_display()
 
     def update_display(self):
         self.clock.draw_clock()
@@ -159,14 +173,13 @@ class View:
     def get_game_board(self):
         return self.game_board
 
-
 '''
 Test Main
 '''
 
 
 def main():
-    view = View2()
+    view = View()
     view.display()
 
 
