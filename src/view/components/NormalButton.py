@@ -11,6 +11,7 @@ class NormalButton:
         self.y = s.MODE_BUTTON_Y
         self.draw_button()
         self.is_on = False
+        self.click()
 
     def __str__(self):
         return f"{self.text} button"

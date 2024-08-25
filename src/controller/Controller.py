@@ -38,7 +38,7 @@ class Controller:
         [each.unclick() for each in self.view.difficulty_buttons if each.is_on and each != button]
         print(f"[Controller] - {button.on_click()}")
         [self.view.new_puzzle_button.arm_button() for each in self.view.difficulty_buttons if each.is_on]
-        if not any([each.is_on for each in self.view.difficulty_buttons]):
+        if not any([button.is_on for button in self.view.difficulty_buttons]):
             self.view.new_puzzle_button.disarm_button()
 
     def handle_mode_button_event(self, button):
@@ -62,8 +62,18 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
 
     def handle_new_puzzle_event(self, button):
-        print(f"[Controller] - {button.on_click()}")
-        self.view.reset_display()
+        default_difficulty = "easy"
+        next_difficulty = None
+        for each in self.view.difficulty_buttons:
+            if each.is_on:
+                next_difficulty = each.text
+
+        if next_difficulty is not None:
+            print(f"[Controller] - {button.on_click()}")
+            self.view.reset_display(next_difficulty)
+        else:
+            print(f"[Controller] - {button.on_click()}")
+            self.view.reset_display(default_difficulty)
 
     def handle_cell_event(self, cell):
         [each.unclick() for each in self.view.game_board.get_game_cells() if each.is_on and each != cell]
@@ -76,16 +86,15 @@ class Controller:
         elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable:
             if self.view.normal_button.is_on:
                 self.view.game_board.get_selected_cell().set_number(button.get_number())
-                self.view.game_board.get_selected_cell().on_click()
-            if self.view.candidate_button.is_on:
+                self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
+            if self.view.candidate_button.is_on and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
                 self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
 
-
-
-
     def handle_puzzle_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
+
+
 
 def main():
     model = Model()
