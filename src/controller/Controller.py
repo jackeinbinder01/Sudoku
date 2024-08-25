@@ -54,8 +54,13 @@ class Controller:
                 self.view.normal_button.unclick()
             if self.view.candidate_button.is_on:
                 self.view.normal_button.click()
+                for each in self.view.game_board.get_game_cells():
+                    each.draw_cell(auto_candidate=True)
             if self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
+                for each in self.view.game_board.get_game_cells():
+                    each.draw_cell(auto_candidate=False)
+
         print(f"[Controller] - {button.on_click()}")
 
     def handle_clock_event(self, button):

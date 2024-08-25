@@ -19,12 +19,11 @@ class GameCell:
         self.number = ""
         self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
         self.clear_cell = False
-        self.user_candidates = []
-        self.auto_candidates = []
+        self.user_candidates = set()
+        self.auto_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
         self.draw_cell()
         self.is_on = False
         self.editable = True
-
 
     def __str__(self):
         return f"cell at '{self.get_row_col()}' set to '{self.number}'"
@@ -33,7 +32,10 @@ class GameCell:
         if candidate in self.user_candidates:
             self.user_candidates.remove(candidate)
         else:
-            self.user_candidates.append(candidate)
+            self.user_candidates.add(candidate)
+
+    def add_auto_candidate(self, auto_candidates):
+        self.auto_candidates = auto_candidates
 
     def draw_candidate(self, num, color=s.WHITE):
         if num == "X":
@@ -44,8 +46,8 @@ class GameCell:
 
         candidate_cell_size = self.width / 3
 
-        row = (int(num) - 1) // 3
-        col = (int(num) - 1) % 3
+        row = (num - 1) // 3
+        col = (num - 1) % 3
 
         x = self.x + candidate_cell_size / 2 + (candidate_cell_size * col)
         y = self.y + candidate_cell_size / 2 + (candidate_cell_size * row)
@@ -53,7 +55,6 @@ class GameCell:
         text_rect = text_surface.get_rect(center=(x, y))
 
         self.game_window.blit(text_surface, text_rect)
-        print(f"draw candidate executed: {num}")
 
     def display_number_error(self):
         current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -92,7 +93,7 @@ class GameCell:
     def get_inner_square(self):
         return self.inner_square
 
-    def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE):
+    def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE, auto_candidate=False):
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
 
         if self.clear_cell and self.user_candidates:
@@ -105,9 +106,14 @@ class GameCell:
             self.clear_cell = False
             return
 
-        if self.number == "" and self.user_candidates:
-            for each in self.user_candidates:
-                self.draw_candidate(each, text_color)
+        if auto_candidate:
+            candidate_list = self.auto_candidates
+        else:
+            candidate_list = self.user_candidates
+
+        if self.number == "" and candidate_list:
+            for candidate in candidate_list:
+                self.draw_candidate(candidate, text_color)
 
         else:
             self.draw_text(str(self.get_number()), text_color)
