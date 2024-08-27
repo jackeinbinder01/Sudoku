@@ -99,14 +99,26 @@ class Controller:
     def handle_puzzle_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
 
+    def display_puzzle(self):
+        for i in range(9):
+            for j in range(9):
+                pass
+
+    def print_puzzle(self):
+        puzzle = self.model.get_puzzle()
+        puzzle.pretty_print()
+
 
 
 def main():
     model = Model()
     view = View()
     controller = Controller(model, view)
+    controller.print_puzzle()
 
     controller.go()
+    controller.print_puzzle()
+
 
 
 if __name__ == '__main__':
