@@ -4,41 +4,68 @@ import random
 class Puzzle:
     def __init__(self, difficulty):
         self.difficulty = difficulty
-        self.puzzle = []
+        self.matrix = []
         self.generate_puzzle()
+        self.hide_values()
 
-    def get_puzzle(self):
-        return self.puzzle
+    def get_matrix(self, flattened=False):
+        if flattened:
+            return self.get_flattened_matrix()
+        return self.matrix
+
+    def get_flattened_matrix(self):
+        return [value for row in self.matrix for value in row]
+
+    def hide_values(self):
+        match self.difficulty.lower():
+            case "easy":
+                values_to_hide = random.randint(41, 46)
+            case "medium":
+                values_to_hide = random.randint(47, 51)
+            case "hard":
+                values_to_hide = random.randint(52, 56)
+            case _:
+                raise ValueError(f"Invalid difficulty: {self.difficulty}")
+
+        print(f"displayed values: {81 - values_to_hide}")
+
+        counter = 0
+        while counter < values_to_hide:
+            random_row = random.randint(0, 8)
+            random_col = random.randint(0, 8)
+            if self.matrix[random_row][random_col] != 0:
+                self.matrix[random_row][random_col] = 0
+                counter += 1
 
     def generate_puzzle(self):
-        self.puzzle = [[0 for i in range(9)] for j in range(9)]
+        self.matrix = [[0 for i in range(9)] for j in range(9)]
         self.solve_puzzle()
 
     def generate_n_puzzles(self, n):
-        self.puzzle = [[0 for i in range(9)] for j in range(9)]
+        self.matrix = [[0 for i in range(9)] for j in range(9)]
         for i in range(n):
             self.solve_puzzle()
 
     def pretty_print(self):
-        for i in range(len(self.puzzle)):
-            print(self.puzzle[i])
+        for i in range(len(self.matrix)):
+            print(self.matrix[i])
 
     def get_value_at(self, row, col):
         if not (0 <= row < 9 and 0 <= col < 9):
             raise IndexError("row and col cannot be less than 0 or exceed 8")
-        value_at_row_col = self.puzzle[row][col]
+        value_at_row_col = self.matrix[row][col]
         return value_at_row_col
 
     def get_values_in_row(self, row):
         if not (0 <= row < 9):
             raise IndexError("row cannot be less than 0 or exceed 8")
-        values_in_row = set(self.puzzle[row])
+        values_in_row = set(self.matrix[row])
         return values_in_row
 
     def get_values_in_col(self, col):
         if not (0 <= col < 9):
             raise IndexError("col cannot be less than 0 or exceed 8")
-        values_in_col = set([self.puzzle[i][col] for i in range(9)])
+        values_in_col = set([self.matrix[i][col] for i in range(9)])
         return values_in_col
 
     def get_values_in_square(self, square):
@@ -46,7 +73,7 @@ class Puzzle:
             raise IndexError("row and col cannot be less than 1 or exceed 9")
         row_start = (square - 1) // 3 * 3
         col_start = (square - 1) % 3 * 3
-        values = set(self.puzzle[row_start + i][col_start + j] for i in range(3) for j in range(3))
+        values = set(self.matrix[row_start + i][col_start + j] for i in range(3) for j in range(3))
         return values
 
     def get_square_from_row_col(self, row, col):
@@ -58,7 +85,7 @@ class Puzzle:
     def get_candidates(self, row, col):
         if not (0 <= row < 9 and 0 <= col < 9):
             raise IndexError("row and col cannot be less than 0 or exceed 8")
-        candidates = set([i for i in range(9) if self.is_valid_move(i, row, col)])
+        candidates = set([i for i in range(1, 10) if self.is_valid_move(i, row, col)])
         return candidates
 
     def is_valid_move(self, num, row, col):
@@ -77,7 +104,7 @@ class Puzzle:
         if not (1 <= num <= 9):
             raise IndexError("num cannot be less than 1 or exceed 9")
         for i in range(9):
-            if self.puzzle[row][i] == num:
+            if self.matrix[row][i] == num:
                 return False
         return True
 
@@ -87,7 +114,7 @@ class Puzzle:
         if not (1 <= num <= 9):
             raise IndexError("num cannot be less than 1 or exceed 9")
         for i in range(9):
-            if self.puzzle[i][col] == num:
+            if self.matrix[i][col] == num:
                 return False
         return True
 
@@ -132,7 +159,7 @@ class Puzzle:
             raise IndexError("row and col cannot be less than 0 or exceed 8")
         if not (0 <= num <= 9):
             raise IndexError("num cannot be less than 0 or exceed 9")
-        self.puzzle[row][col] = num
+        self.matrix[row][col] = num
 
     def has_one_solution(self):
         pass

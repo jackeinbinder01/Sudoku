@@ -20,13 +20,14 @@ class GameCell:
         self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
         self.clear_cell = False
         self.user_candidates = set()
-        self.auto_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        self.auto_candidates = set()
         self.draw_cell()
         self.is_on = False
-        self.editable = True
+        self.editable = False
+        self.hidden = False
 
     def __str__(self):
-        return f"cell at '{self.get_row_col()}' set to '{self.number}'"
+        return f"cell at '{self.get_row_col()}' set to '{self.number}' editable status - {self.editable}"
 
     def add_candidate(self, candidate):
         if candidate in self.user_candidates:
@@ -34,7 +35,7 @@ class GameCell:
         else:
             self.user_candidates.add(candidate)
 
-    def add_auto_candidate(self, auto_candidates):
+    def set_auto_candidates(self, auto_candidates):
         self.auto_candidates = auto_candidates
 
     def draw_candidate(self, num, color=s.WHITE):
@@ -72,8 +73,14 @@ class GameCell:
         x, y = position
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
+    def get_row(self):
+        return self.row
+
+    def get_col(self):
+        return self.col
+
     def get_row_col(self):
-        return self.row + 1, chr(self.col + ord('a'))
+        return self.row, self.col
 
     def get_number(self):
         return self.number
@@ -89,6 +96,12 @@ class GameCell:
 
     def set_editable(self, editable=True):
         self.editable = editable
+
+    def is_hidden(self):
+        return self.hidden
+
+    def set_hidden(self, hidden=True):
+        self.hidden = hidden
 
     def get_inner_square(self):
         return self.inner_square
@@ -138,7 +151,10 @@ class GameCell:
         self.draw_cell(color, s.BLACK)
 
     def unhighlight_button(self):
-        self.draw_cell()
+        if not self.hidden:
+            self.draw_cell(s.GREY)
+        else:
+            self.draw_cell()
 
     def on_click(self):
         return self.click() if not self.is_on else self.unclick()

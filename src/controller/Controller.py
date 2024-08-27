@@ -13,6 +13,8 @@ class Controller:
         view.set_observer(self)
 
     def go(self):
+        self.display_puzzle()
+        #self.populate_auto_candidates()
         self.view.display()
 
     def process_events(self, event, button):
@@ -55,11 +57,13 @@ class Controller:
             if self.view.candidate_button.is_on:
                 self.view.normal_button.click()
                 for each in self.view.game_board.get_game_cells():
-                    each.draw_cell(auto_candidate=True)
+                    if each.get_number() == "":
+                        each.draw_cell(auto_candidate=True)
             if self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
                 for each in self.view.game_board.get_game_cells():
-                    each.draw_cell(auto_candidate=False)
+                    if each.get_number() == "":
+                        each.draw_cell(auto_candidate=False)
 
         print(f"[Controller] - {button.on_click()}")
 
@@ -88,7 +92,8 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
         if self.view.game_board.get_selected_cell() in ["", None]:
             return
-        elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable:
+        elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable():
+            print(self.view.game_board.get_selected_cell())
             if self.view.normal_button.is_on:
                 self.view.game_board.get_selected_cell().set_number(button.get_number())
                 self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
@@ -99,25 +104,38 @@ class Controller:
     def handle_puzzle_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
 
+    def populate_auto_candidates(self):
+        for game_cell in self.view.game_board.get_game_cells():
+            candidates = self.model.get_puzzle().get_candidates(game_cell.get_row(), game_cell.get_col())
+            game_cell.set_auto_candidates(candidates)
+
+
     def display_puzzle(self):
-        for i in range(9):
-            for j in range(9):
-                pass
+        flattened_game_cells = self.view.game_board.get_game_cells()
+        flattened_puzzle_matrix = self.model.get_puzzle().get_matrix(True)
+
+        for i in range(0, len(flattened_puzzle_matrix)):
+            flattened_game_cells[i].set_number(flattened_puzzle_matrix[i])
+            flattened_game_cells[i].draw_cell(s.GREY)
+            if flattened_game_cells[i].get_number() == "":
+                flattened_game_cells[i].draw_cell()
+                flattened_game_cells[i].set_editable()
+                flattened_game_cells[i].set_hidden()
+                candidates = self.model.get_puzzle().get_candidates(flattened_game_cells[i].get_row(), flattened_game_cells[i].get_col())
+                flattened_game_cells[i].set_auto_candidates(candidates)
 
     def print_puzzle(self):
         puzzle = self.model.get_puzzle()
         puzzle.pretty_print()
 
 
-
 def main():
     model = Model()
     view = View()
     controller = Controller(model, view)
-    controller.print_puzzle()
 
     controller.go()
-    controller.print_puzzle()
+
 
 
 
