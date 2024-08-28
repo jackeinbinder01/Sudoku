@@ -5,16 +5,35 @@ class Puzzle:
     def __init__(self, difficulty):
         self.difficulty = difficulty
         self.matrix = []
+        self.solved_matrix = []
+        self.initial_matrix = []
         self.generate_puzzle()
-        self.hide_values()
 
-    def get_matrix(self, flattened=False):
-        if flattened:
-            return self.get_flattened_matrix()
-        return self.matrix
+    def get_difficulty(self):
+        return self.difficulty
 
-    def get_flattened_matrix(self):
-        return [value for row in self.matrix for value in row]
+    def get_matrix(self, matrix="matrix", flattened=False):
+        match matrix:
+            case "matrix":
+                if flattened:
+                    return self.get_flattened_matrix(self.matrix)
+                else:
+                    return self.matrix
+            case "initial_matrix":
+                if flattened:
+                    return self.get_flattened_matrix(self.initial_matrix)
+                else:
+                    return self.initial_matrix
+            case "solved_matrix":
+                if flattened:
+                    return self.get_flattened_matrix(self.solved_matrix)
+                else:
+                    return self.solved_matrix
+            case _:
+                raise ValueError(f"Invalid matrix '{matrix}'")
+
+    def get_flattened_matrix(self, matrix):
+        return [value for row in matrix for value in row]
 
     def hide_values(self):
         match self.difficulty.lower():
@@ -38,11 +57,14 @@ class Puzzle:
                 counter += 1
 
     def generate_puzzle(self):
-        self.matrix = [[0 for i in range(9)] for j in range(9)]
+        self.matrix = [[0 for _ in range(9)] for _ in range(9)]
         self.solve_puzzle()
+        self.solved_matrix = [row[:] for row in self.matrix]
+        self.hide_values()
+        self.initial_matrix = [row[:] for row in self.matrix]
 
     def generate_n_puzzles(self, n):
-        self.matrix = [[0 for i in range(9)] for j in range(9)]
+        self.matrix = [[0 for _ in range(9)] for _ in range(9)]
         for i in range(n):
             self.solve_puzzle()
 
@@ -50,10 +72,12 @@ class Puzzle:
         for i in range(len(self.matrix)):
             print(self.matrix[i])
 
-    def get_value_at(self, row, col):
+    def get_value_at(self, row, col, matrix=None):
+        if matrix is None:
+            matrix = self.matrix
         if not (0 <= row < 9 and 0 <= col < 9):
             raise IndexError("row and col cannot be less than 0 or exceed 8")
-        value_at_row_col = self.matrix[row][col]
+        value_at_row_col = matrix[row][col]
         return value_at_row_col
 
     def get_values_in_row(self, row):
@@ -89,10 +113,12 @@ class Puzzle:
         return candidates
 
     def is_valid_move(self, num, row, col):
+        if num == 0:
+            return True
         if not (0 <= row < 9 and 0 <= col < 9):
             raise IndexError("row and col cannot be less than 0 or exceed 8")
-        if not (1 <= num <= 9):
-            raise IndexError("num cannot be less than 1 or exceed 9")
+        if not (0 <= num <= 9):
+            raise IndexError("num cannot be less than 0 or exceed 9")
         if all([self.is_valid_in_row(num, row), self.is_valid_in_col(num, col),
                 self.is_valid_in_square(num, row, col)]):
             return True

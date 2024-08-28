@@ -17,17 +17,26 @@ class GameCell:
         self.y = s.GAME_BOARD_Y + s.THICK_BORDER_WEIGHT + (
                 self.height * self.row + (s.THIN_BORDER_WEIGHT * self.row)) + (self.row // 3) * 3
         self.number = ""
-        self.inner_square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
+        self.square = ((self.row // 3) * 3) + ((self.col // 3) + 1)
         self.clear_cell = False
         self.user_candidates = set()
         self.auto_candidates = set()
-        self.draw_cell()
+        self.active_candidate = self.user_candidates
         self.is_on = False
         self.editable = False
-        self.hidden = False
+        self.given = True
+        self.highlighted = False
+        self.draw_cell()
+
 
     def __str__(self):
         return f"cell at '{self.get_row_col()}' set to '{self.number}' editable status - {self.editable}"
+
+    def use_auto_candidate(self, auto_candidate=True):
+        if auto_candidate:
+            self.active_candidate = self.auto_candidates
+        else:
+            self.active_candidate = self.user_candidates
 
     def add_candidate(self, candidate):
         if candidate in self.user_candidates:
@@ -39,7 +48,7 @@ class GameCell:
         self.auto_candidates = auto_candidates
 
     def draw_candidate(self, num, color=s.WHITE):
-        if num == "X":
+        if num == 0:
             return
 
         font = pygame.font.Font(None, 16)
@@ -86,7 +95,7 @@ class GameCell:
         return self.number
 
     def set_number(self, number):
-        if number == "X":
+        if number == 0:
             self.clear_cell = True
         elif 1 <= number <= 9:
             self.number = number
@@ -97,16 +106,25 @@ class GameCell:
     def set_editable(self, editable=True):
         self.editable = editable
 
-    def is_hidden(self):
-        return self.hidden
+    def is_given(self):
+        return self.given
 
-    def set_hidden(self, hidden=True):
-        self.hidden = hidden
+    def set_given(self, given=True):
+        self.given = given
 
-    def get_inner_square(self):
-        return self.inner_square
+    def get_square(self):
+        return self.square
 
-    def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE, auto_candidate=False):
+    def draw_cell(self, button_color=s.BLACK, text_color=s.WHITE):
+        if self.given and self.highlighted:
+            button_color = s.HIGHLIGHT
+            text_color = s.BLACK
+        elif self.given and not self.highlighted:
+            button_color = s.GREY
+        elif self.highlighted:
+            button_color = s.HIGHLIGHT
+            text_color = s.BLACK
+
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
 
         if self.clear_cell and self.user_candidates:
@@ -119,13 +137,8 @@ class GameCell:
             self.clear_cell = False
             return
 
-        if auto_candidate:
-            candidate_list = self.auto_candidates
-        else:
-            candidate_list = self.user_candidates
-
-        if self.number == "" and candidate_list:
-            for candidate in candidate_list:
+        if self.number == "" and self.active_candidate:
+            for candidate in self.active_candidate:
                 self.draw_candidate(candidate, text_color)
 
         else:
@@ -148,13 +161,12 @@ class GameCell:
             self.unhighlight_button()
 
     def highlight_button(self, color=s.HIGHLIGHT):
-        self.draw_cell(color, s.BLACK)
+        self.highlighted = True
+        self.draw_cell()
 
     def unhighlight_button(self):
-        if not self.hidden:
-            self.draw_cell(s.GREY)
-        else:
-            self.draw_cell()
+        self.highlighted = False
+        self.draw_cell()
 
     def on_click(self):
         return self.click() if not self.is_on else self.unclick()

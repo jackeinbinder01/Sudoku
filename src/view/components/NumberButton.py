@@ -41,7 +41,7 @@ class NumberButton:
 
     def get_number(self):
         if self.num + 1 == 10:
-            return "X"
+            return 0
         else:
             return self.num + 1
 
