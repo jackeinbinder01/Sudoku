@@ -7,6 +7,7 @@ class Puzzle:
         self.matrix = []
         self.solved_matrix = []
         self.initial_matrix = []
+        self.invalid_affected_cells = set()
         self.generate_puzzle()
 
     def get_difficulty(self):
@@ -82,25 +83,31 @@ class Puzzle:
         value_at_row_col = matrix[row][col]
         return value_at_row_col
 
-    def get_values_in_row(self, row):
+    def get_row(self, row):
         if not (0 <= row < 9):
             raise IndexError("row cannot be less than 0 or exceed 8")
-        values_in_row = set(self.matrix[row])
-        return values_in_row
+        return self.matrix[row]
 
-    def get_values_in_col(self, col):
+    def get_col(self, col):
         if not (0 <= col < 9):
             raise IndexError("col cannot be less than 0 or exceed 8")
-        values_in_col = set([self.matrix[i][col] for i in range(9)])
-        return values_in_col
+        return [self.matrix[i][col] for i in range(9)]
 
-    def get_values_in_square(self, square):
+    def get_square(self, square):
         if not (1 <= square <= 9):
             raise IndexError("row and col cannot be less than 1 or exceed 9")
         row_start = (square - 1) // 3 * 3
         col_start = (square - 1) % 3 * 3
-        values = set(self.matrix[row_start + i][col_start + j] for i in range(3) for j in range(3))
-        return values
+        return list(self.matrix[row_start + i][col_start + j] for i in range(3) for j in range(3))
+
+    def get_values_in_row(self, row):
+        return set(self.get_row(row))
+
+    def get_values_in_col(self, col):
+        return set(self.get_col(col))
+
+    def get_values_in_square(self, square):
+        return set(self.get_square(square))
 
     def get_square_from_row_col(self, row, col):
         if not (0 <= row < 9 and 0 <= col < 9):
@@ -125,6 +132,47 @@ class Puzzle:
                 self.is_valid_in_square(num, row, col)]):
             return True
         return False
+
+    def find_invalid_affected_cells(self):
+        self.invalid_affected_cells = set()
+        for row in range(len(self.matrix)):
+            for cell in self.get_duped_cells_in_row(row):
+                self.invalid_affected_cells.add(cell)
+
+        for col in range(len(self.matrix)):
+            for cell in self.get_duped_cells_in_col(col):
+                self.invalid_affected_cells.add(cell)
+
+        for row in range(len(self.matrix)):
+            for col in range(len(self.matrix[row])):
+                for cell in self.get_duped_cells_in_square(row, col):
+                    self.invalid_affected_cells.add(cell)
+
+    def get_duped_cells_in_row(self, row):
+        duped_cells = set()
+        for col_idx, num in enumerate(self.get_row(row)):
+            if num > 0 and self.get_row(row).count(num) > 1:
+                duped_cells.add((row, col_idx))
+        return duped_cells
+
+    def get_duped_cells_in_col(self, col):
+        duped_cells = set()
+        for row_idx, num in enumerate(self.get_col(col)):
+            if num > 0 and self.get_col(col).count(num) > 1:
+                duped_cells.add((row_idx, col))
+        return duped_cells
+
+    def get_duped_cells_in_square(self, row, col):
+        duped_cells = set()
+        square = self.get_square_from_row_col(row, col)
+        for num in self.get_square(square):
+            if num > 0 and self.get_square(square).count(num) > 1:
+                if self.get_value_at(row, col) == num:
+                    duped_cells.add((row, col))
+        return duped_cells
+
+    def get_invalid_affected_cells(self):
+        return self.invalid_affected_cells
 
     def is_valid_in_row(self, num, row):
         if not (0 <= row < 9):
@@ -195,6 +243,7 @@ class Puzzle:
 
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()

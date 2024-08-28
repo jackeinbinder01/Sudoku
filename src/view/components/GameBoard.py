@@ -23,3 +23,8 @@ class GameBoard:
         for cell in self.game_cells:
             if cell.is_on:
                 return cell
+
+    def get_cell_at(self, row, col):
+        for cell in self.game_cells:
+            if cell.get_row_col() == (row, col):
+                return cell

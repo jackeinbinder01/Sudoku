@@ -26,11 +26,18 @@ class GameCell:
         self.editable = False
         self.given = True
         self.highlighted = False
+        self.invalid_affected = False
         self.draw_cell()
-
 
     def __str__(self):
         return f"cell at '{self.get_row_col()}' set to '{self.number}' editable status - {self.editable}"
+
+    def is_invalid_affected(self):
+        return self.invalid_affected
+
+    def set_invalid_affected(self, invalid_affected=True):
+        self.invalid_affected = invalid_affected
+        self.draw_cell()
 
     def use_auto_candidate(self, auto_candidate=True):
         if auto_candidate:
@@ -126,6 +133,9 @@ class GameCell:
             text_color = s.BLACK
 
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
+
+        if self.invalid_affected:
+            self.display_number_error()
 
         if self.clear_cell and self.user_candidates:
             for each in self.user_candidates:

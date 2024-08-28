@@ -74,18 +74,17 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
 
     def handle_new_puzzle_event(self, button):
-        next_difficulty = None
+        print(f"[Controller] - {button.on_click()}")
+        new_difficulty = None
         for each in self.view.difficulty_buttons:
             if each.is_on:
-                next_difficulty = each.text
+                new_difficulty = each.text
 
-        if next_difficulty is not None:
-            print(f"[Controller] - {button.on_click()}")
-            self.model.get_new_puzzle(next_difficulty)
+        if new_difficulty is not None:
+            self.model.get_new_puzzle(new_difficulty)
             self.view.reset_display(self.model.get_puzzle().get_difficulty())
             self.display_puzzle()
         else:
-            print(f"[Controller] - {button.on_click()}")
             self.model.get_new_puzzle()
             self.view.reset_display(self.model.get_puzzle().get_difficulty())
             self.display_puzzle()
@@ -104,14 +103,29 @@ class Controller:
                 selected_cell = self.view.get_game_board().get_selected_cell()
                 selected_cell.set_number(button.get_number())
                 self.model.set_number_in_cell(button.get_number(), selected_cell.get_row(), selected_cell.get_col())
+                self.model.get_puzzle().find_invalid_affected_cells()
+
+                for cell in self.view.game_board.get_game_cells():
+                    cell.set_invalid_affected(False)
+
+                for row_col in self.model.get_puzzle().get_invalid_affected_cells():
+                    invalid_affected_cell = self.view.game_board.get_cell_at(row_col[0], row_col[1])
+                    invalid_affected_cell.set_invalid_affected()
 
                 self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
+                if self.view.candidate_button.auto_candidate:
+                    self.refresh_auto_candidates()
+
+                    for each in self.view.game_board.get_game_cells():
+                        each.use_auto_candidate(True)
+
             if self.view.candidate_button.is_on and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
                 self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
 
         if self.model.is_solved():
-            print(f"YOU SOLVED THE SUDOKU!")
+            self.view.clock.pause()
+            print(f"YOU SOLVED THE {self.model.get_puzzle().get_difficulty().upper()} SUDOKU IN {self.view.clock.get_time()}!")
 
     def handle_puzzle_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
@@ -133,10 +147,14 @@ class Controller:
             self.display_puzzle()
             self.view.clock.pause()
 
-    def populate_auto_candidates(self):
-        for game_cell in self.view.game_board.get_game_cells():
-            candidates = self.model.get_puzzle().get_candidates(game_cell.get_row(), game_cell.get_col())
-            game_cell.set_auto_candidates(candidates)
+    def refresh_auto_candidates(self):
+        game_cells = self.view.game_board.get_game_cells()
+        flattened_puzzle_matrix = self.model.get_puzzle().get_matrix(flattened=True)
+
+        for i in range(0, len(flattened_puzzle_matrix)):
+            candidates = self.model.get_puzzle().get_candidates(game_cells[i].get_row(), game_cells[i].get_col())
+            game_cells[i].set_auto_candidates(candidates)
+            game_cells[i].draw_cell()
 
     def display_puzzle(self, puzzle_state="matrix"):
         game_cells = self.view.game_board.get_game_cells()
@@ -144,7 +162,7 @@ class Controller:
 
         for i in range(0, len(flattened_puzzle_matrix)):
             game_cells[i].set_number(flattened_puzzle_matrix[i])
-            game_cells[i].draw_cell(s.GREY)
+            game_cells[i].draw_cell()
             if game_cells[i].get_number() == "":
                 game_cells[i].set_editable()
                 game_cells[i].set_given(False)

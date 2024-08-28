@@ -46,10 +46,12 @@ class NewPuzzleButton:
     def highlight_button(self, button_color=s.HIGHLIGHT, text_color=s.BLACK):
         pygame.draw.rect(self.game_window, button_color, (self.x, self.y, self.width, self.height))
         self.draw_text(self.text, text_color)
+        pygame.display.update()
 
     def unhighlight_button(self):
         pygame.draw.rect(self.game_window, s.BLACK, (self.x, self.y, self.width, self.height))
         self.draw_button()
+        pygame.display.update()
 
     def on_click(self):
         if not self.clicked:
