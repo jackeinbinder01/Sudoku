@@ -98,7 +98,8 @@ class Controller:
             return
         elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable():
             print(self.view.game_board.get_selected_cell())
-            if self.view.normal_button.is_on:
+            if self.view.normal_button.is_on or button.get_number() == 0:
+                # This code is copied below
                 selected_cell = self.view.get_game_board().get_selected_cell()
                 selected_cell.set_number(button.get_number())
                 self.model.set_number_in_cell(button.get_number(), selected_cell.get_row(), selected_cell.get_col())
@@ -111,7 +112,7 @@ class Controller:
                     invalid_affected_cell = self.view.game_board.get_cell_at(row_col[0], row_col[1])
                     invalid_affected_cell.set_invalid_affected()
 
-                self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
+                self.view.game_board.get_selected_cell().draw_cell()
                 if self.view.candidate_button.auto_candidate:
                     self.refresh_auto_candidates()
 
@@ -121,7 +122,7 @@ class Controller:
 
             if self.view.candidate_button.is_on and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
-                self.view.game_board.get_selected_cell().draw_cell(s.HIGHLIGHT, s.BLACK)
+                self.view.game_board.get_selected_cell().draw_cell()
 
         if self.model.is_solved():
             self.view.clock.pause()

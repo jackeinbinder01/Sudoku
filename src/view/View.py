@@ -1,6 +1,4 @@
 import pygame
-import tkinter as tk
-from tkinter import messagebox
 
 from src.resources.settings import settings as s
 from src.view.components.Clock import Clock
@@ -43,8 +41,7 @@ class View:
         self.puzzle_buttons = []
         self.components = []
 
-        self.default_difficulty = "easy"
-        self.reset_display(self.default_difficulty)
+        self.reset_display()
 
         self.winner_popup = None
 

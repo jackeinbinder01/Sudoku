@@ -49,8 +49,6 @@ class Puzzle:
             case _:
                 raise ValueError(f"Invalid difficulty: {self.difficulty}")
 
-        print(f"displayed values: {81 - values_to_hide}")
-
         counter = 0
         while counter < values_to_hide:
             random_row = random.randint(0, 8)

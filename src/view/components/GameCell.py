@@ -184,9 +184,9 @@ class GameCell:
     def click(self):
         self.is_on = True
         self.toggle_highlight()
-        return f"'{self.get_row_col()}' cell clicked on"
+        return f"{self.get_row_col()} cell clicked on"
 
     def unclick(self):
         self.is_on = False
         self.toggle_highlight()
-        return f"'{self.get_row_col()}' cell clicked off"
+        return f"{self.get_row_col()} cell clicked off"
