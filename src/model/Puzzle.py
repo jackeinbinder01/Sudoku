@@ -32,7 +32,9 @@ class Puzzle:
             case _:
                 raise ValueError(f"Invalid matrix '{matrix}'")
 
-    def get_flattened_matrix(self, matrix):
+    def get_flattened_matrix(self, matrix=None):
+        if matrix is None:
+            return [value for row in self.matrix for value in row]
         return [value for row in matrix for value in row]
 
     def hide_values(self):
@@ -184,7 +186,7 @@ class Puzzle:
         if not (0 <= row < 9 and 0 <= col < 9):
             raise IndexError("row and col cannot be less than 0 or exceed 8")
         if not (0 <= num <= 9):
-            raise IndexError("num cannot be less than 0 or exceed 9")
+            raise ValueError("num cannot be less than 0 or exceed 9")
         self.matrix[row][col] = num
 
     def has_one_solution(self):

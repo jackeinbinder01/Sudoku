@@ -25,10 +25,7 @@ class Model:
         self.puzzle.matrix = [row[:] for row in self.puzzle.solved_matrix]
 
     def set_number_in_cell(self, num, row, col):
-        if self.puzzle.is_valid_move(num, row, col):
-            self.puzzle.set_number_in_cell(num, row, col)
-        else:
-            raise Exception(f"Invalid move num: {num}, row: {row}, col: {col}")
+        self.puzzle.set_number_in_cell(num, row, col)
 
     def is_solved(self):
         return self.puzzle.is_solved()

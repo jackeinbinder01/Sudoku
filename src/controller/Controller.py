@@ -120,14 +120,14 @@ class Controller:
             self.display_puzzle("initial_matrix")
         if button == self.view.reveal_cell_button:
             selected_cell = self.view.game_board.get_selected_cell()
-            solved_matrix = self.model.get_puzzle().get_matrix("solved_matrix")
-            selected_cell_answer = self.model.get_puzzle().get_value_at(selected_cell.get_row(), selected_cell.get_col(), solved_matrix)
-
             if selected_cell in ["", None]:
                 return
             else:
+                solved_matrix = self.model.get_puzzle().get_matrix("solved_matrix")
+                selected_cell_answer = self.model.get_puzzle().get_value_at(selected_cell.get_row(), selected_cell.get_col(), solved_matrix)
                 selected_cell.set_number(selected_cell_answer)
-            self.display_puzzle()
+                self.model.get_puzzle().set_number_in_cell(selected_cell_answer, selected_cell.get_row(), selected_cell.get_col())
+                self.display_puzzle()
         if button == self.view.give_up_button:
             self.model.solve_puzzle()
             self.display_puzzle()
