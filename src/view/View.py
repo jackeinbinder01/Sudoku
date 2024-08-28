@@ -1,4 +1,6 @@
 import pygame
+import tkinter as tk
+from tkinter import messagebox
 
 from src.resources.settings import settings as s
 from src.view.components.Clock import Clock
@@ -10,6 +12,7 @@ from src.view.components.NewPuzzleButton import NewPuzzleButton
 from src.view.components.NumberBoard import NumberBoard
 from src.view.components.NumberButton import NumberButton
 from src.view.components.PuzzleButton import PuzzleButton
+from src.view.components.PopUp import PopUp
 
 '''
 Sudoku app view
@@ -42,6 +45,8 @@ class View:
 
         self.default_difficulty = "easy"
         self.reset_display(self.default_difficulty)
+
+        self.winner_popup = None
 
         self.observer = None
 
@@ -98,6 +103,8 @@ class View:
             for text, num in [("Reset Puzzle", 1), ("Reveal Cell", 2), ("Give Up", 3)]
         )
 
+        self.winner_popup = PopUp(self.game_window, "Winner")
+
     def package_components(self):
         self.difficulty_buttons = [
             self.easy_button,
@@ -125,7 +132,6 @@ class View:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 for button in self.difficulty_buttons:
@@ -159,16 +165,7 @@ class View:
     def get_game_board(self):
         return self.game_board
 
-
-'''
-Test Main
-'''
-
-
-def main():
-    view = View2()
-    view.display()
-
-
-if __name__ == '__main__':
-    main()
+    def show_winner_popup(self, message):
+        pygame.display.flip()
+        self.winner_popup = PopUp("Congratulations!", message)
+        self.winner_popup.show()

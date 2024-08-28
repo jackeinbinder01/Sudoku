@@ -23,7 +23,7 @@ class Clock:
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
         self.display_time()
 
-    def get_time(self):
+    def get_time(self, long_format=False):
         current_time = time.time()
         if not self.is_paused:
             self.elapsed_time = current_time - self.start_time
@@ -31,10 +31,19 @@ class Clock:
         hours = int(self.elapsed_time // 3600)
         minutes = int((self.elapsed_time % 3600) // 60)
         seconds = int(self.elapsed_time % 60)
-        if hours > 0:
-            return f"{hours}:{minutes:02}:{seconds:02}"
+
+        if not long_format:
+            if hours > 0:
+                return f"{hours}:{minutes:02}:{seconds:02}"
+            else:
+                return f"{minutes:02}:{seconds:02}"
         else:
-            return f"{minutes:02}:{seconds:02}"
+            if hours > 0:
+                return f"{hours} {"hour" if hours == 1 else "hours"}, {minutes} {"minute" if minutes == 1 else "minutes"} and {seconds} {"second" if seconds == 1 else "seconds"}"
+            elif 60 > minutes > 0:
+                return f"{minutes} {"minute" if minutes == 1 else "minutes"} and {seconds} {"second" if seconds == 1 else "seconds"}"
+            else:
+                return f"{seconds} {"second" if seconds == 1 else "seconds"}"
 
     def display_time(self):
         font = pygame.font.Font(None, 80)

@@ -1,8 +1,7 @@
 '''
 Sudoku controller
 '''
-from src.model.Model import Model
-from src.view.View import View
+
 from src.resources.settings import settings as s
 
 
@@ -118,6 +117,7 @@ class Controller:
 
                     for each in self.view.game_board.get_game_cells():
                         each.use_auto_candidate(True)
+                        each.draw_cell()
 
             if self.view.candidate_button.is_on and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
@@ -125,7 +125,7 @@ class Controller:
 
         if self.model.is_solved():
             self.view.clock.pause()
-            print(f"YOU SOLVED THE {self.model.get_puzzle().get_difficulty().upper()} SUDOKU IN {self.view.clock.get_time()}!")
+            self.view.show_winner_popup(f"You completed the {self.model.get_puzzle().get_difficulty().lower()} Sudoku in {self.view.clock.get_time(True)}!")
 
     def handle_puzzle_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
@@ -173,17 +173,3 @@ class Controller:
     def print_puzzle(self):
         puzzle = self.model.get_puzzle()
         puzzle.pretty_print()
-
-
-def main():
-    model = Model()
-    view = View()
-    controller = Controller(model, view)
-
-    controller.go()
-
-
-
-
-if __name__ == '__main__':
-    main()
