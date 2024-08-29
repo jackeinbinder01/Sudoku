@@ -11,7 +11,7 @@ class DifficultyButton:
         self.width, self.height = s.DIFFICULTY_BUTTON_SIZE
         self.x = s.DIFFICULTY_BUTTON_X + (self.width * self.num)
         self.y = s.DIFFICULTY_BUTTON_Y
-        self.is_on = False
+        self.on = False
         self.pre_selected = pre_selected
         self.draw_button()
         if pre_selected:
@@ -19,6 +19,8 @@ class DifficultyButton:
 
     def __str__(self):
         return f"{self.text} button"
+
+
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -39,7 +41,7 @@ class DifficultyButton:
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
     def toggle_highlight(self):
-        if self.is_on:
+        if self.on:
             self.highlight_button()
         else:
             self.unhighlight_button()
@@ -55,15 +57,15 @@ class DifficultyButton:
             self.highlight_button(s.WHITE)
 
     def on_click(self):
-        return self.click() if not self.is_on else self.unclick()
+        return self.click() if not self.on else self.unclick()
 
     def click(self):
-        self.is_on = True
+        self.on = True
         self.toggle_highlight()
         return f"'{self.text}' button clicked on"
 
     def unclick(self):
-        self.is_on = False
+        self.on = False
         self.toggle_highlight()
         return f"'{self.text}' button clicked off"
 
@@ -74,4 +76,4 @@ class DifficultyButton:
         return self.pre_selected
 
     def is_on(self):
-        return self.is_on
+        return self.on

@@ -33,10 +33,10 @@ class Controller:
                 return "invalid button click"
 
     def handle_difficulty_button_event(self, button):
-        [each.unclick() for each in self.view.difficulty_buttons if each.is_on and each != button]
+        [each.unclick() for each in self.view.difficulty_buttons if each.is_on() and each != button]
         print(f"[Controller] - {button.on_click()}")
-        [self.view.new_puzzle_button.arm_button() for each in self.view.difficulty_buttons if each.is_on]
-        if not any([button.is_on for button in self.view.difficulty_buttons]):
+        [self.view.new_puzzle_button.arm_button() for each in self.view.difficulty_buttons if each.is_on()]
+        if not any([button.is_on() for button in self.view.difficulty_buttons]):
             self.view.new_puzzle_button.disarm_button()
 
     def handle_mode_button_event(self, button):
@@ -45,9 +45,9 @@ class Controller:
                 self.view.candidate_button.unclick()
             if self.view.candidate_button.auto_candidate:
                 self.view.candidate_button.on_click()
-                for each in self.view.game_board.get_game_cells():
-                    each.use_auto_candidate(False)
-                    each.draw_cell()
+                for cell in self.view.game_board.get_game_cells():
+                    cell.use_auto_candidate(False)
+                    cell.draw_cell()
 
             if self.view.normal_button.is_on and not self.view.candidate_button.is_on:
                 return
@@ -58,17 +58,17 @@ class Controller:
             if self.view.candidate_button.is_on:
                 self.view.normal_button.click()
                 selected_cell = self.view.get_game_board().get_selected_cell()
-                for each in self.view.game_board.get_game_cells():
-                    each.use_auto_candidate()
-                    each.unclick()
-                    each.draw_cell()
+                for cell in self.view.game_board.get_game_cells():
+                    cell.use_auto_candidate()
+                    cell.unclick()
+                    cell.draw_cell()
                 if selected_cell is not None:
                     selected_cell.on_click()
             if self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
-                for each in self.view.game_board.get_game_cells():
-                    each.use_auto_candidate(False)
-                    each.draw_cell()
+                for cell in self.view.game_board.get_game_cells():
+                    cell.use_auto_candidate(False)
+                    cell.draw_cell()
 
         print(f"[Controller] - {button.on_click()}")
 
@@ -79,7 +79,7 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
         new_difficulty = None
         for each in self.view.difficulty_buttons:
-            if each.is_on:
+            if each.is_on():
                 new_difficulty = each.text
 
         if new_difficulty is not None:
