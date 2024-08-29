@@ -125,10 +125,10 @@ class Puzzle:
         self.invalid_affected_cells = set()
         for row in range(len(self.matrix)):
             self.invalid_affected_cells.update(self.get_duped_cells_in_row(row))
-        for col in range(len(self.matrix[0])):
+        for col in range(len(self.matrix)):
             self.invalid_affected_cells.update(self.get_duped_cells_in_col(col))
-        for row in range(0, len(self.matrix), 3):
-            for col in range(0, len(self.matrix[0]), 3):
+        for row in range(len(self.matrix)):
+            for col in range(len(self.matrix)):
                 self.invalid_affected_cells.update(self.get_duped_cells_in_square(row, col))
 
     def get_duped_cells_in_row(self, row):

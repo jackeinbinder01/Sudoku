@@ -45,8 +45,15 @@ class Controller:
                 self.view.candidate_button.unclick()
             if self.view.candidate_button.auto_candidate:
                 self.view.candidate_button.on_click()
+                for each in self.view.game_board.get_game_cells():
+                    each.use_auto_candidate(False)
+                    each.draw_cell()
+
             if self.view.normal_button.is_on and not self.view.candidate_button.is_on:
                 return
+
+
+
         if button == self.view.candidate_button:
             if self.view.normal_button.is_on and not self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
