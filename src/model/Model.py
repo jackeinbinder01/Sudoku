@@ -29,3 +29,12 @@ class Model:
 
     def is_solved(self):
         return self.puzzle.is_solved()
+
+    def set_default_difficulty(self, difficulty):
+        try:
+            if difficulty.lower() in ["easy", "medium", "hard"]:
+                self.DEFAULT_DIFFICULTY = difficulty
+            else:
+                raise ValueError("Difficulty must be 'easy', 'medium' or 'hard'")
+        except ValueError as e:
+            print(f"Error in set_default_difficulty(): {e}")

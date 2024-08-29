@@ -2,8 +2,6 @@
 Sudoku controller
 '''
 
-from src.resources.settings import settings as s
-
 
 class Controller:
     def __init__(self, model, view):
