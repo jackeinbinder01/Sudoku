@@ -52,8 +52,6 @@ class Controller:
             if self.view.normal_button.is_on and not self.view.candidate_button.is_on:
                 return
 
-
-
         if button == self.view.candidate_button:
             if self.view.normal_button.is_on and not self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
