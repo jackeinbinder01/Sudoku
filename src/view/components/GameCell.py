@@ -22,7 +22,7 @@ class GameCell:
         self.user_candidates = set()
         self.auto_candidates = set()
         self.active_candidate = self.user_candidates
-        self.is_on = False
+        self.on = False
         self.editable = False
         self.given = True
         self.highlighted = False
@@ -31,6 +31,9 @@ class GameCell:
 
     def __str__(self):
         return f"cell at '{self.get_row_col()}' set to '{self.number}' editable status - {self.editable}"
+
+    def is_on(self):
+        return self.on
 
     def is_invalid_affected(self):
         return self.invalid_affected
@@ -165,12 +168,12 @@ class GameCell:
         return self.x + (self.width / 2), self.y + (self.height / 2)
 
     def toggle_highlight(self):
-        if self.is_on:
+        if self.on:
             self.highlight_button()
         else:
             self.unhighlight_button()
 
-    def highlight_button(self, color=s.HIGHLIGHT):
+    def highlight_button(self):
         self.highlighted = True
         self.draw_cell()
 
@@ -179,14 +182,14 @@ class GameCell:
         self.draw_cell()
 
     def on_click(self):
-        return self.click() if not self.is_on else self.unclick()
+        return self.click() if not self.on else self.unclick()
 
     def click(self):
-        self.is_on = True
+        self.on = True
         self.toggle_highlight()
         return f"{self.get_row_col()} cell clicked on"
 
     def unclick(self):
-        self.is_on = False
+        self.on = False
         self.toggle_highlight()
         return f"{self.get_row_col()} cell clicked off"

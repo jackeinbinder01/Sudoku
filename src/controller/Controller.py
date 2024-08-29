@@ -41,7 +41,7 @@ class Controller:
 
     def handle_mode_button_event(self, button):
         if button == self.view.normal_button:
-            if self.view.candidate_button.is_on and not self.view.candidate_button.auto_candidate:
+            if self.view.candidate_button.is_on() and not self.view.candidate_button.auto_candidate:
                 self.view.candidate_button.unclick()
             if self.view.candidate_button.auto_candidate:
                 self.view.candidate_button.on_click()
@@ -49,13 +49,13 @@ class Controller:
                     cell.use_auto_candidate(False)
                     cell.draw_cell()
 
-            if self.view.normal_button.is_on and not self.view.candidate_button.is_on:
+            if self.view.normal_button.is_on() and not self.view.candidate_button.is_on():
                 return
 
         if button == self.view.candidate_button:
-            if self.view.normal_button.is_on and not self.view.candidate_button.auto_candidate:
+            if self.view.normal_button.is_on() and not self.view.candidate_button.auto_candidate:
                 self.view.normal_button.unclick()
-            if self.view.candidate_button.is_on:
+            if self.view.candidate_button.is_on():
                 self.view.normal_button.click()
                 selected_cell = self.view.get_game_board().get_selected_cell()
                 for cell in self.view.game_board.get_game_cells():
@@ -92,7 +92,7 @@ class Controller:
             self.display_puzzle()
 
     def handle_cell_event(self, cell):
-        [each.unclick() for each in self.view.game_board.get_game_cells() if each.is_on and each != cell]
+        [each.unclick() for each in self.view.game_board.get_game_cells() if each.is_on() and each != cell]
         print(f"[Controller] - {cell.on_click()}")
 
     def handle_number_button_event(self, button):
@@ -101,7 +101,7 @@ class Controller:
             return
         elif self.view.game_board.get_selected_cell() != "" and self.view.game_board.get_selected_cell().is_editable():
             print(self.view.game_board.get_selected_cell())
-            if self.view.normal_button.is_on or button.get_number() == 0:
+            if self.view.normal_button.is_on() or button.get_number() == 0:
                 # This code is copied below
                 selected_cell = self.view.get_game_board().get_selected_cell()
                 selected_cell.set_number(button.get_number())
@@ -123,7 +123,7 @@ class Controller:
                         each.use_auto_candidate(True)
                         each.draw_cell()
 
-            if self.view.candidate_button.is_on and self.view.get_game_board().get_selected_cell().number in ["", None]:
+            if self.view.candidate_button.is_on() and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
                 self.view.game_board.get_selected_cell().draw_cell()
 

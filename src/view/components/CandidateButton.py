@@ -10,11 +10,14 @@ class CandidateButton:
         self.x = s.MODE_BUTTON_X + self.width
         self.y = s.MODE_BUTTON_Y
         self.draw_button()
-        self.is_on = False
+        self.on = False
         self.auto_candidate = False
 
     def __str__(self):
         return f"{self.text} button"
+
+    def is_on(self):
+        return self.on
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -35,9 +38,9 @@ class CandidateButton:
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
     def toggle_highlight(self):
-        if self.is_on and self.auto_candidate:
+        if self.on and self.auto_candidate:
             self.highlight_button("Auto Candidate")
-        elif self.is_on:
+        elif self.on:
             self.highlight_button(self.text)
         else:
             self.unhighlight_button()
@@ -51,26 +54,26 @@ class CandidateButton:
         self.draw_button()
 
     def on_click(self):
-        if self.is_on and not self.auto_candidate:
+        if self.on and not self.auto_candidate:
             return self.activate_auto_candidate()
-        if self.is_on and self.auto_candidate:
+        if self.on and self.auto_candidate:
             return self.deactivate_auto_candidate()
 
-        return self.click() if not self.is_on else self.unclick()
+        return self.click() if not self.on else self.unclick()
 
     def click(self):
-        self.is_on = True
+        self.on = True
         self.toggle_highlight()
         return f"'{self.text}' button clicked on"
 
     def unclick(self):
-        self.is_on = False
+        self.on = False
         self.auto_candidate = False
         self.toggle_highlight()
         return f"'{self.text}' button clicked off"
 
     def activate_auto_candidate(self):
-        self.is_on = True
+        self.on = True
         self.auto_candidate = True
         self.toggle_highlight()
         return f"'{self.text}' button clicked on, auto-candidate activated"

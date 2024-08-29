@@ -14,10 +14,13 @@ class NewPuzzleButton:
         self.y = s.NEW_PUZZLE_BUTTON_Y
         self.draw_button()
         self.clicked = False
-        self.is_armed = False
+        self.armed = False
 
     def __str__(self):
         return f"{self.text} button"
+
+    def is_armed(self):
+        return self.armed
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -69,9 +72,9 @@ class NewPuzzleButton:
         self.toggle_highlight()
 
     def arm_button(self):
-        self.is_armed = True
+        self.armed = True
         self.highlight_button(s.RED, s.WHITE)
 
     def disarm_button(self):
-        self.is_armed = False
+        self.armed = False
         self.unhighlight_button()

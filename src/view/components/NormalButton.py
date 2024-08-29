@@ -10,11 +10,14 @@ class NormalButton:
         self.x = s.MODE_BUTTON_X
         self.y = s.MODE_BUTTON_Y
         self.draw_button()
-        self.is_on = False
+        self.on = False
         self.click()
 
     def __str__(self):
         return f"{self.text} button"
+
+    def is_on(self):
+        return self.on
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
@@ -35,7 +38,7 @@ class NormalButton:
         return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
 
     def toggle_highlight(self):
-        if self.is_on:
+        if self.on:
             self.highlight_button()
         else:
             self.unhighlight_button()
@@ -49,14 +52,14 @@ class NormalButton:
         self.draw_button()
 
     def on_click(self):
-        return self.click() if not self.is_on else self.unclick()
+        return self.click() if not self.on else self.unclick()
 
     def click(self):
-        self.is_on = True
+        self.on = True
         self.toggle_highlight()
         return f"'{self.text}' button clicked on"
 
     def unclick(self):
-        self.is_on = False
+        self.on = False
         self.toggle_highlight()
         return f"'{self.text}' button clicked off"
