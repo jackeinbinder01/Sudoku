@@ -14,6 +14,9 @@ class Puzzle:
         self.invalid_affected_cells = set()
         self.generate_puzzle()
 
+    def reset_matrix(self):
+        self.matrix = self.initial_matrix
+
     def get_difficulty(self):
         return self.difficulty
 
@@ -27,6 +30,9 @@ class Puzzle:
                 return self.get_flattened_matrix(self.solved_matrix) if flattened else self.solved_matrix
             case _:
                 raise ValueError(f"Invalid matrix '{matrix}'")
+
+    def set_matrix(self, matrix):
+        self.matrix = matrix
 
     def get_flattened_matrix(self, matrix=None):
         return [value for row in (self.matrix if matrix is None else matrix) for value in row]

@@ -118,13 +118,13 @@ class Controller:
                 self.view.game_board.get_selected_cell().draw_cell()
                 if self.view.candidate_button.is_auto_candidate():
                     self.refresh_auto_candidates()
-
                     for each in self.view.game_board.get_game_cells():
                         each.use_auto_candidate(True)
                         each.draw_cell()
 
             if self.view.candidate_button.is_on() and self.view.get_game_board().get_selected_cell().number in ["", None]:
                 self.view.game_board.get_selected_cell().add_candidate(button.get_number())
+                self.refresh_auto_candidates()
                 self.view.game_board.get_selected_cell().draw_cell()
 
         if self.model.is_solved():
@@ -135,7 +135,8 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
         if button == self.view.reset_puzzle_button:
             self.view.reset_display(self.model.get_puzzle().get_difficulty())
-            self.display_puzzle("initial_matrix")
+            self.model.reset_puzzle()
+            self.display_puzzle()
         if button == self.view.reveal_cell_button:
             selected_cell = self.view.game_board.get_selected_cell()
             if selected_cell in ["", None]:

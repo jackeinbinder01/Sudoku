@@ -19,10 +19,12 @@ class Model:
         return self.puzzle
 
     def reset_puzzle(self):
-        self.puzzle.matrix = [row[:] for row in self.puzzle.initial_matrix]
+        initial_matrix = self.puzzle.get_matrix("initial_matrix")
+        self.puzzle.set_matrix([row[:] for row in initial_matrix])
 
     def solve_puzzle(self):
-        self.puzzle.matrix = [row[:] for row in self.puzzle.solved_matrix]
+        solved_matrix = self.puzzle.get_matrix("solved_matrix")
+        self.puzzle.set_matrix([row[:] for row in solved_matrix])
 
     def set_number_in_cell(self, num, row, col):
         self.puzzle.set_number_in_cell(num, row, col)
