@@ -41,9 +41,9 @@ class Controller:
 
     def handle_mode_button_event(self, button):
         if button == self.view.normal_button:
-            if self.view.candidate_button.is_on() and not self.view.candidate_button.auto_candidate:
+            if self.view.candidate_button.is_on() and not self.view.candidate_button.is_auto_candidate():
                 self.view.candidate_button.unclick()
-            if self.view.candidate_button.auto_candidate:
+            if self.view.candidate_button.is_auto_candidate():
                 self.view.candidate_button.on_click()
                 for cell in self.view.game_board.get_game_cells():
                     cell.use_auto_candidate(False)
@@ -53,7 +53,7 @@ class Controller:
                 return
 
         if button == self.view.candidate_button:
-            if self.view.normal_button.is_on() and not self.view.candidate_button.auto_candidate:
+            if self.view.normal_button.is_on() and not self.view.candidate_button.is_auto_candidate():
                 self.view.normal_button.unclick()
             if self.view.candidate_button.is_on():
                 self.view.normal_button.click()
@@ -64,7 +64,7 @@ class Controller:
                     cell.draw_cell()
                 if selected_cell is not None:
                     selected_cell.on_click()
-            if self.view.candidate_button.auto_candidate:
+            if self.view.candidate_button.is_auto_candidate():
                 self.view.normal_button.unclick()
                 for cell in self.view.game_board.get_game_cells():
                     cell.use_auto_candidate(False)
@@ -116,7 +116,7 @@ class Controller:
                     invalid_affected_cell.set_invalid_affected()
 
                 self.view.game_board.get_selected_cell().draw_cell()
-                if self.view.candidate_button.auto_candidate:
+                if self.view.candidate_button.is_auto_candidate():
                     self.refresh_auto_candidates()
 
                     for each in self.view.game_board.get_game_cells():

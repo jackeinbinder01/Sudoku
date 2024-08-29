@@ -18,6 +18,8 @@ class CandidateButton:
 
     def is_on(self):
         return self.on
+    def is_auto_candidate(self):
+        return self.auto_candidate
 
     def draw_button(self):
         pygame.draw.rect(self.game_window, s.WHITE, (self.x, self.y, self.width, self.height), 1)
