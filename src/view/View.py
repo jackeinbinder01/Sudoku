@@ -1,4 +1,5 @@
 import pygame
+import tkinter as tk
 
 from src.resources.settings import settings as s
 from src.view.components.Clock import Clock
@@ -20,6 +21,9 @@ Sudoku app view
 class View:
 
     def __init__(self):
+
+        self.tk_root = tk.Tk()
+        self.tk_root.withdraw()
 
         self.game_window = None
         self.game_board = None
@@ -100,8 +104,6 @@ class View:
             for text, num in [("Reset Puzzle", 1), ("Reveal Cell", 2), ("Give Up", 3)]
         )
 
-        self.winner_popup = PopUp(self.game_window, "Winner")
-
     def package_components(self):
         self.difficulty_buttons = [
             self.easy_button,
@@ -120,11 +122,6 @@ class View:
             self.give_up_button
         ]
 
-        self.components = {
-            self.clock,
-            self.new_puzzle_button
-        }
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -137,16 +134,12 @@ class View:
                 for button in self.mode_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("mode_button_click", button)
-
                 for button in self.number_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("number_button_click", button)
                 for button in self.puzzle_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("puzzle_button_click", button)
-                for component in self.components:
-                    if component.is_clicked(pos):
-                        self.notify_observer("other_component_clicked", component)
                 if self.clock.is_clicked(pos):
                     self.notify_observer("clock_click", self.clock)
                 if self.new_puzzle_button.is_clicked(pos):
@@ -161,6 +154,30 @@ class View:
 
     def get_game_board(self):
         return self.game_board
+
+    def get_difficulty_buttons(self):
+        return self.difficulty_buttons
+
+    def get_normal_button(self):
+        return self.normal_button
+
+    def get_candidate_button(self):
+        return self.candidate_button
+
+    def get_clock(self):
+        return self.clock
+
+    def get_new_puzzle_button(self):
+        return self.new_puzzle_button
+
+    def get_reset_puzzle_button(self):
+        return self.reset_puzzle_button
+
+    def get_reveal_cell_button(self):
+        return self.reveal_cell_button
+
+    def get_give_up_button(self):
+        return self.give_up_button
 
     def show_winner_popup(self, message):
         pygame.display.flip()
