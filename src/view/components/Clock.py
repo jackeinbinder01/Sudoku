@@ -42,9 +42,12 @@ class Clock:
                 return f"{minutes:02}:{seconds:02}"
         else:
             if hours > 0:
-                return f"{hours} {"hour" if hours == 1 else "hours"}, {minutes} {"minute" if minutes == 1 else "minutes"} and {seconds} {"second" if seconds == 1 else "seconds"}"
+                return (f"{hours} {"hour" if hours == 1 else "hours"},"
+                        f"{minutes} {"minute" if minutes == 1 else "minutes"} and "
+                        f"{seconds} {"second" if seconds == 1 else "seconds"}")
             elif 60 > minutes > 0:
-                return f"{minutes} {"minute" if minutes == 1 else "minutes"} and {seconds} {"second" if seconds == 1 else "seconds"}"
+                return (f"{minutes} {"minute" if minutes == 1 else "minutes"} and "
+                        f"{seconds} {"second" if seconds == 1 else "seconds"}")
             else:
                 return f"{seconds} {"second" if seconds == 1 else "seconds"}"
 

@@ -60,10 +60,6 @@ class View:
     def notify_observer(self, event, button):
         self.observer.process_events(event, button)
 
-    def set_default_difficulty(self, difficulty):
-        if difficulty.lower() in ["easy", "medium", "hard"]:
-            self.default_difficulty = difficulty.lower
-
     def init_game_window(self):
         self.game_window = pygame.display.set_mode(s.SCREEN_SIZE)
         pygame.display.set_caption(s.WINDOW_TITLE)
@@ -131,19 +127,26 @@ class View:
                 for button in self.difficulty_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("difficulty_button_click", button)
-                for button in self.mode_buttons:
-                    if button.is_clicked(pos):
-                        self.notify_observer("mode_button_click", button)
                 for button in self.number_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("number_button_click", button)
                 for button in self.puzzle_buttons:
                     if button.is_clicked(pos):
                         self.notify_observer("puzzle_button_click", button)
+                if self.normal_button.is_clicked(pos):
+                    self.notify_observer("normal_button_click", self.normal_button)
+                if self.candidate_button.is_clicked(pos):
+                    self.notify_observer("candidate_button_click", self.candidate_button)
                 if self.clock.is_clicked(pos):
                     self.notify_observer("clock_click", self.clock)
                 if self.new_puzzle_button.is_clicked(pos):
                     self.notify_observer("new_puzzle_button_click", self.new_puzzle_button)
+                if self.reset_puzzle_button.is_clicked(pos):
+                    self.notify_observer("reset_puzzle_button_click", self.reset_puzzle_button)
+                if self.reveal_cell_button.is_clicked(pos):
+                    self.notify_observer("reveal_cell_button_click", self.reveal_cell_button)
+                if self.give_up_button.is_clicked(pos):
+                    self.notify_observer("give_up_button_click", self.give_up_button)
                 for cell in self.game_board.get_game_cells():
                     if cell.is_clicked(pos):
                         self.notify_observer("cell_click", cell)

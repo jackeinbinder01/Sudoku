@@ -17,16 +17,22 @@ class Controller:
         match event.lower():
             case "difficulty_button_click":
                 return self.handle_difficulty_button_event(button)
-            case "mode_button_click":
-                return self.handle_mode_button_event(button)
+            case "normal_button_click":
+                return self.handle_normal_button_event(button)
+            case "candidate_button_click":
+                return self.handle_candidate_button_event(button)
             case "clock_click":
                 return self.handle_clock_event(button)
             case "new_puzzle_button_click":
                 return self.handle_new_puzzle_event(button)
             case "number_button_click":
                 return self.handle_number_button_event(button)
-            case "puzzle_button_click":
-                return self.handle_puzzle_button_event(button)
+            case "give_up_button_click":
+                return self.handle_give_up_button_event(button)
+            case "reset_puzzle_button_click":
+                return self.handle_reset_puzzle_button_event(button)
+            case "reveal_cell_button_click":
+                return self.handle_reveal_cell_button_event(button)
             case "cell_click":
                 return self.handle_cell_event(button)
             case _:
@@ -39,37 +45,35 @@ class Controller:
         if not any([button.is_on() for button in self.view.get_difficulty_buttons()]):
             self.view.get_new_puzzle_button().disarm_button()
 
-    def handle_mode_button_event(self, button):
-        if button == self.view.get_normal_button():
-            if self.view.get_candidate_button().is_on() and not self.view.get_candidate_button().is_auto_candidate():
-                self.view.get_candidate_button().unclick()
-            if self.view.get_candidate_button().is_auto_candidate():
-                self.view.get_candidate_button().on_click()
-                for cell in self.view.get_game_board().get_game_cells():
-                    cell.use_auto_candidate(False)
-                    cell.draw_cell()
+    def handle_normal_button_event(self, button):
+        if self.view.get_normal_button().is_on() and not self.view.get_candidate_button().is_on():
+            return
+        if self.view.get_candidate_button().is_on() and not self.view.get_candidate_button().is_auto_candidate():
+            self.view.get_candidate_button().unclick()
+        if self.view.get_candidate_button().is_auto_candidate():
+            self.view.get_candidate_button().on_click()
+            for cell in self.view.get_game_board().get_game_cells():
+                cell.use_auto_candidate(False)
+                cell.draw_cell()
+        print(f"[Controller] - {button.on_click()}")
 
-            if self.view.get_normal_button().is_on() and not self.view.get_candidate_button().is_on():
-                return
-
-        if button == self.view.get_candidate_button():
-            if self.view.get_normal_button().is_on() and not self.view.get_candidate_button().is_auto_candidate():
-                self.view.get_normal_button().unclick()
-            if self.view.get_candidate_button().is_on():
-                self.view.get_normal_button().click()
-                selected_cell = self.view.get_game_board().get_selected_cell()
-                for cell in self.view.get_game_board().get_game_cells():
-                    cell.use_auto_candidate()
-                    cell.unclick()
-                    cell.draw_cell()
-                if selected_cell is not None:
-                    selected_cell.on_click()
-            if self.view.get_candidate_button().is_auto_candidate():
-                self.view.get_normal_button().unclick()
-                for cell in self.view.get_game_board().get_game_cells():
-                    cell.use_auto_candidate(False)
-                    cell.draw_cell()
-
+    def handle_candidate_button_event(self, button):
+        if self.view.get_normal_button().is_on() and not self.view.get_candidate_button().is_auto_candidate():
+            self.view.get_normal_button().unclick()
+        if self.view.get_candidate_button().is_on():
+            self.view.get_normal_button().click()
+            selected_cell = self.view.get_game_board().get_selected_cell()
+            for cell in self.view.get_game_board().get_game_cells():
+                cell.use_auto_candidate()
+                cell.unclick()
+                cell.draw_cell()
+            if selected_cell is not None:
+                selected_cell.on_click()
+        if self.view.get_candidate_button().is_auto_candidate():
+            self.view.get_normal_button().unclick()
+            for cell in self.view.get_game_board().get_game_cells():
+                cell.use_auto_candidate(False)
+                cell.draw_cell()
         print(f"[Controller] - {button.on_click()}")
 
     def handle_clock_event(self, button):
@@ -99,7 +103,8 @@ class Controller:
         print(f"[Controller] - {button.on_click()}")
         if self.view.get_game_board().get_selected_cell() in ["", None]:
             return
-        elif self.view.get_game_board().get_selected_cell() != "" and self.view.get_game_board().get_selected_cell().is_editable():
+        elif (self.view.get_game_board().get_selected_cell() != "" and
+              self.view.get_game_board().get_selected_cell().is_editable()):
             print(self.view.get_game_board().get_selected_cell())
             if self.view.normal_button.is_on() or button.get_number() == 0:
                 # This code is copied below
@@ -122,35 +127,53 @@ class Controller:
                         each.use_auto_candidate(True)
                         each.draw_cell()
 
-            if self.view.get_candidate_button().is_on() and self.view.get_game_board().get_selected_cell().number in ["", None]:
+            if (self.view.get_candidate_button().is_on() and
+                    self.view.get_game_board().get_selected_cell().number in ["", None]):
                 self.view.get_game_board().get_selected_cell().add_candidate(button.get_number())
                 self.refresh_auto_candidates()
                 self.view.get_game_board().get_selected_cell().draw_cell()
 
         if self.model.is_solved():
             self.view.get_clock().pause()
-            self.view.show_winner_popup(f"You completed the {self.model.get_puzzle().get_difficulty().lower()} Sudoku in {self.view.get_clock().get_time(True)}!")
+            self.view.show_winner_popup(
+                f"You completed the {self.model.get_puzzle().get_difficulty().lower()}"
+                f" Sudoku in {self.view.get_clock().get_time(True)}!")
 
-    def handle_puzzle_button_event(self, button):
+    def handle_give_up_button_event(self, button):
         print(f"[Controller] - {button.on_click()}")
-        if button == self.view.get_reset_puzzle_button():
-            self.view.reset_display(self.model.get_puzzle().get_difficulty())
-            self.model.reset_puzzle()
+        self.model.solve_puzzle()
+
+        for each in self.view.get_game_board().get_game_cells():
+            each.set_invalid_affected(False)
+            each.draw_cell()
+
+        self.display_puzzle()
+        self.view.get_clock().pause()
+
+    def handle_reveal_cell_button_event(self, button):
+        print(f"[Controller] - {button.on_click()}")
+        selected_cell = self.view.get_game_board().get_selected_cell()
+        if selected_cell in ["", None]:
+            return
+        else:
+            solved_matrix = self.model.get_puzzle().get_matrix("solved_matrix")
+            selected_cell_answer = self.model.get_puzzle().get_value_at(
+                selected_cell.get_row(),
+                selected_cell.get_col(), solved_matrix
+            )
+            selected_cell.set_number(selected_cell_answer)
+            self.model.get_puzzle().set_number_in_cell(
+                selected_cell_answer,
+                selected_cell.get_row(),
+                selected_cell.get_col()
+            )
             self.display_puzzle()
-        if button == self.view.get_reveal_cell_button():
-            selected_cell = self.view.get_game_board().get_selected_cell()
-            if selected_cell in ["", None]:
-                return
-            else:
-                solved_matrix = self.model.get_puzzle().get_matrix("solved_matrix")
-                selected_cell_answer = self.model.get_puzzle().get_value_at(selected_cell.get_row(), selected_cell.get_col(), solved_matrix)
-                selected_cell.set_number(selected_cell_answer)
-                self.model.get_puzzle().set_number_in_cell(selected_cell_answer, selected_cell.get_row(), selected_cell.get_col())
-                self.display_puzzle()
-        if button == self.view.get_give_up_button():
-            self.model.solve_puzzle()
-            self.display_puzzle()
-            self.view.get_clock().pause()
+
+    def handle_reset_puzzle_button_event(self, button):
+        print(f"[Controller] - {button.on_click()}")
+        self.view.reset_display(self.model.get_puzzle().get_difficulty())
+        self.model.reset_puzzle()
+        self.display_puzzle()
 
     def refresh_auto_candidates(self):
         game_cells = self.view.get_game_board().get_game_cells()

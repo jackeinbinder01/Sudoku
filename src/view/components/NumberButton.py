@@ -59,7 +59,7 @@ class NumberButton:
             self.unhighlight_button()
 
     def highlight_button(self):
-        pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height),0, 10)
+        pygame.draw.rect(self.game_window, s.HIGHLIGHT, (self.x, self.y, self.width, self.height), 0, 10)
         self.draw_number(s.BLACK)
         pygame.display.update()
 

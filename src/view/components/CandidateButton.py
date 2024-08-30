@@ -18,6 +18,7 @@ class CandidateButton:
 
     def is_on(self):
         return self.on
+
     def is_auto_candidate(self):
         return self.auto_candidate
 
